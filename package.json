@@ -13,7 +13,12 @@
     "node": ">=16.15.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "test": "vitest --run",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint . --cache "
+
   },
   "author": "",
   "license": "ISC",
