@@ -14,11 +14,10 @@
   },
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js",
+    "start": "node appjs",
     "test": "vitest --run",
     "coverage": "vitest run --coverage",
     "lint": "eslint . --cache "
-
   },
   "author": "",
   "license": "ISC",
