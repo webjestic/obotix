@@ -17,39 +17,35 @@ const fileSchema = new mongo.mongoose.Schema({
       
 })
 const configSchema = new mongo.mongoose.Schema({
-
-    name: {
-        type: String,
-        required: true
+    CONFIG_ENV: String,
+    APP_NAME: String,
+    ROLES: {
+        basic: Number,
+        moderator: Number,
+        manager: Number,
+        admin: Number
     },
-    env: {
-        APP_NAME: String,
-        CONFIG_ENV: String,
-        ROLES: {
-            basic: Number,
-            moderator: Number,
-            manager: Number,
-            admin: Number
-        },
-        logish: {
-            level: String,
-            performanceTime: Boolean,
-            controllers: [
-                {
-                    name: String,
-                    active: Boolean,
-                    displayOnlyEnvNamespace: Boolean,
-                    displayLevels: [String],
-                    format: String,
-                    useColor: Boolean
-                },
-                {
-                    name: String,
-                    active: Boolean,
-                    files: [fileSchema]
-                }
-            ]
-        }
+    logish: {
+        level: String,
+        performanceTime: Boolean,
+        controllers: [
+            {
+                name: String,
+                active: Boolean,
+                displayOnlyEnvNamespace: Boolean,
+                displayLevels: [String],
+                format: String,
+                useColor: Boolean
+            },
+            {
+                name: String,
+                active: Boolean,
+                files: [fileSchema]
+            }
+        ]
+    },
+    redis: {
+        enabled: Boolean
     }
 })
 
