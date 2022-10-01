@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 zdoc/
-node_moduleså
 
 # Mac OS
 .DS_Store
