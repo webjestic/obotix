@@ -9,30 +9,41 @@ var responses = []
 // eslint-disable-next-line no-unused-vars
 export async function addRequestMiddleware(middlware) {
     log.debug('addRequestMiddleware')
-    requests.push(middlware)
+    if (middlware !== undefined && typeof middlware === 'function')
+        requests.push(middlware)
+    else 
+        log.error('addRequestMiddleware: middleware is undefined or not a function.')
 }
 
 // eslint-disable-next-line no-unused-vars
 export async function addRouter(router) {
     log.debug('addRouter')
-    routes.push(router)
+    if (router !== undefined && typeof router === 'function')
+        routes.push(router)
+    else 
+        log.error('addRouter: router is undefined or not a function.')
 }
 
 // eslint-disable-next-line no-unused-vars
 export async function addResponseMiddleware(middlware) {
     log.debug('addResponseMiddleware')
-    responses.push(middlware)
+    if (middlware !== undefined && typeof middlware === 'function')
+        responses.push(middlware)
+    else
+        log.error('addResponseMiddleware: middleware is undefined or not a function.')
 }
 
-function populateUse(app, array) {
+function updateAppUse(app, array) {
     for (let fn of array) 
         app.use(fn)
 }
 
+
 // eslint-disable-next-line no-unused-vars
 export async function run(app) {
     log = logger.getLogger('obotix:xpress')
-    populateUse(app, requests)
-    populateUse(app, routes)
-    populateUse(app, responses)
+
+    updateAppUse(app, requests)
+    updateAppUse(app, routes)
+    updateAppUse(app, responses)
 }
