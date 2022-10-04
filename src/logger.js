@@ -1,9 +1,61 @@
 
 import { Logish } from 'logish'
-import * as config from './config.js'
+
+const defaultConfig = {
+
+    'level': 'trace',
+    'performanceTime': true,
+    'controllers': [
+        {
+            'name': 'console',
+            'active': true,
+            'displayOnlyEnvNamespace': false,
+            'displayLevels': [
+                'trace',
+                'debug',
+                'info',
+                'warn',
+                'error',
+                'fatal'
+            ],
+            'format': '%level %namespace %entry %performance',
+            'useColor': true
+        },
+        {
+            'name': 'file',
+            'active': false,
+            'files': [
+                {
+                    'title': 'app logs',
+                    'active': false,
+                    'writeLevels': [
+                        'warn',
+                        'error',
+                        'fatal'
+                    ],
+                    'format': '[%datetime %level] %namespace %host - %entry %performance',
+                    'filename': 'logs/app.log',
+                    'maxsize_in_mb': 5,
+                    'backups_kept': 5,
+                    'gzip_backups': false
+                }
+            ]
+        }
+    ]
+    
+}
+
+export var logs = []
 
 export function getLogger(namespace) {
-    let log = new Logish(config.doc.logish)
+    //let log = new Logish(config.doc.logish)
+    let log = new Logish(defaultConfig)
     log.setNamespace(namespace)
+    logs.push(log)
     return log
+}
+
+export function setLogLevel(logLevel) {
+    for (let log of logs) 
+        log.setLevel(logLevel)
 }
