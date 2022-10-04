@@ -1,30 +1,32 @@
 
 import mongoose from 'mongoose'
+import * as logger from './logger.js'
+
+var log = undefined
 
 export async function connect() {
-
-    let connstr = `mongodb+srv://${process.env.OAPI_MONGODB_USERNAME}:${process.env.OAPI_MONGODB_PASSWORD}`
-    connstr += `@${process.env.OAPI_MONGODB_SERVER}/${process.env.OAPI_MONGODB_DATABASE}?retryWrites=true&w=majority`
+    log = logger.getLogger('engine:mongo')
+    const connstr = `${process.env.OAPI_MONGO}?retryWrites=true&w=majority`
 
     try {
         await mongoose.connect(connstr)
-        console.info(`MongoDB.mongoose connected to ${process.env.OAPI_MONGODB_DATABASE}`)
+        log.info(`MongoDB.mongoose connected to ${process.env.NODE_ENV} db.`)
         return true
     } catch (ex) {
-        console.error('mongodb.mongoose connect() ERROR:', ex)
+        log.error('mongodb.mongoose connect() ERROR:', ex)
         return false
     }
 }
   
 export function disconnect() {
-    console.debug('Disconnecting from mongo database...')
+    log.debug('Disconnecting from mongo database...')
     mongoose.disconnect()
         .then(() => {
-            let msg = `MongoDB.mongoose disconnected from ${process.env.OAPI_MONGODB_SERVER} `
+            let msg = `MongoDB.mongoose disconnected from ${process.env.NODE_ENV} `
             msg += `${process.env.OAPI_MONGODB_DATABASE}`
-            console.info(msg)            
+            log.info(msg)            
         }).catch((e) => {
-            console.error('mongodb.mongoose disconnect() ERROR:', e)
+            log.error('mongodb.mongoose disconnect() ERROR:', e)
         })
 }
   
