@@ -1,0 +1,113 @@
+[{
+  "_id": {
+    "$oid": "63272838cfad0d2187eb5b46"
+  },
+  "CONFIG_ENV": "development",
+  "APP_NAME": "Backend API",
+  "ROLES": {
+    "basic": 0,
+    "moderator": 2,
+    "manager": 4,
+    "admin": 8
+  },
+  "logish": {
+    "level": "trace",
+    "performanceTime": true,
+    "controllers": [
+      {
+        "name": "console",
+        "active": true,
+        "displayOnlyEnvNamespace": false,
+        "displayLevels": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal"
+        ],
+        "format": "%level %namespace %entry %performance",
+        "useColor": true
+      },
+      {
+        "name": "file",
+        "active": false,
+        "files": [
+          {
+            "title": "app logs",
+            "active": false,
+            "writeLevels": [
+              "warn",
+              "error",
+              "fatal"
+            ],
+            "format": "[%datetime %level] %namespace %host - %entry %performance",
+            "filename": "logs/app.log",
+            "maxsize_in_mb": 5,
+            "backups_kept": 5,
+            "gzip_backups": false
+          }
+        ]
+      }
+    ]
+  },
+  "redis": {
+    "enabled": true
+  }
+},{
+  "_id": {
+    "$oid": "6327d794cfad0d2187eb5b6e"
+  },
+  "CONFIG_ENV": "development",
+  "APP_NAME": "Backend API",
+  "ROLES": {
+    "basic": 0,
+    "moderator": 2,
+    "manager": 4,
+    "admin": 8
+  },
+  "logish": {
+    "level": "trace",
+    "performanceTime": true,
+    "controllers": [
+      {
+        "name": "console",
+        "active": true,
+        "displayOnlyEnvNamespace": false,
+        "displayLevels": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal"
+        ],
+        "format": "%level %namespace %entry %performance",
+        "useColor": true
+      },
+      {
+        "name": "file",
+        "active": false,
+        "files": [
+          {
+            "title": "app logs",
+            "active": false,
+            "writeLevels": [
+              "warn",
+              "error",
+              "fatal"
+            ],
+            "format": "[%datetime %level] %namespace %host - %entry %performance",
+            "filename": "logs/app.log",
+            "maxsize_in_mb": 5,
+            "backups_kept": 5,
+            "gzip_backups": false
+          }
+        ]
+      }
+    ]
+  },
+  "redis": {
+    "enabled": true
+  }
+}]
