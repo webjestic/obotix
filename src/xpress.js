@@ -1,12 +1,18 @@
 
-import * as logger from './logger.js'
+import express from 'express'
+import setup from './setup.js'
+import logger from './logger.js'
 
+import http_notFound from './middleware/http_notFound.js'
+import http_internalError from './middleware/http_internalError.js'
+
+var app = undefined
 var log = undefined
 var requests = []
 var routes = []
 var responses = []
 
-export async function addRequestMiddleware(middlware) {
+async function addRequestMiddleware(middlware) {
     log.debug('addRequestMiddleware')
     if (middlware !== undefined && typeof middlware === 'function')
         requests.push(middlware)
@@ -14,7 +20,7 @@ export async function addRequestMiddleware(middlware) {
         log.error('addRequestMiddleware: middleware is undefined or not a function.')
 }
 
-export async function addRouter(router) {
+async function addRouter(router) {
     log.debug('addRouter')
     if (router !== undefined && typeof router === 'function')
         routes.push(router)
@@ -22,7 +28,7 @@ export async function addRouter(router) {
         log.error('addRouter: router is undefined or not a function.')
 }
 
-export async function addResponseMiddleware(middlware) {
+async function addResponseMiddleware(middlware) {
     log.debug('addResponseMiddleware')
     if (middlware !== undefined && typeof middlware === 'function')
         responses.push(middlware)
@@ -30,19 +36,54 @@ export async function addResponseMiddleware(middlware) {
         log.error('addResponseMiddleware: middleware is undefined or not a function.')
 }
 
-export function updateAppUse(app, array) {
+export function updateAppUse(array) {
     for (let fn of array) 
         app.use(fn)
 }
 
-export async function run(app) {
-    log = logger.getLogger('obotix:xpress')
-
-    updateAppUse(app, requests)
-    updateAppUse(app, routes)
+function getRouter() {
+    return express.Router()
 }
 
-export {
+async function init()  {
+    log = logger.getLogger('obotix:xpress')
+    app = express()
+    await setup.run()
+}
+
+async function mount() {
+
+    //
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: false }))
+
+    updateAppUse(requests)
+    updateAppUse(routes)
+    updateAppUse(responses)
+
+    //
+    app.use(http_notFound)
+    app.use(http_internalError)
+
+}
+
+async function listen(callback) {
+    await mount()
+    app.listen(process.env.OAPI_PORT, () => {
+        if (callback !== undefined && typeof callback === 'function')
+            callback()
+    })
+}
+
+export default {
+    app,
+    express,
     requests,
-    responses
+    responses,
+    init,
+    listen,
+    getRouter,
+    addRequestMiddleware,
+    addRouter,
+    addResponseMiddleware
 }

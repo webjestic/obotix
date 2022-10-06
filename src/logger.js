@@ -45,9 +45,9 @@ const defaultConfig = {
     
 }
 
-export var logs = []
+var logs = []
 
-export function getLogger(namespace) {
+function getLogger(namespace) {
     //let log = new Logish(config.doc.logish)
     let log = new Logish(defaultConfig)
     log.setNamespace(namespace)
@@ -55,7 +55,14 @@ export function getLogger(namespace) {
     return log
 }
 
-export function setLogLevel(logLevel) {
+function setLogLevel(logLevel) {
     for (let log of logs) 
         log.setLevel(logLevel)
+}
+
+export default {
+    defaultConfig,
+    logs,
+    setLogLevel,
+    getLogger
 }
