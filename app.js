@@ -1,12 +1,12 @@
 
-import express from 'express'
+
 import obotix from './src/index.js'
 
-const app = express()
-const router = express.Router()
+await obotix.init()
+const router = obotix.getRouter()
 
-await obotix.mount(app)
-const log = obotix.logger.getLogger('app:index')
+const log = obotix.getLogger('app:index')
+obotix.setLogLevel('trace')
 
 obotix.addRequestMiddleware( (req, res, next) => { next() } )
 obotix.addRouter(router)

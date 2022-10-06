@@ -1,10 +1,10 @@
 
 import mongoose from 'mongoose'
-import * as logger from './logger.js'
+import logger from './logger.js'
 
 var log = undefined
 
-export async function connect() {
+async function connect() {
     log = logger.getLogger('engine:mongo')
     const connstr = `${process.env.OAPI_MONGO}?retryWrites=true&w=majority`
 
@@ -18,7 +18,7 @@ export async function connect() {
     }
 }
   
-export function disconnect() {
+function disconnect() {
     log.debug('Disconnecting from mongo database...')
     mongoose.disconnect()
         .then(() => {
@@ -30,10 +30,13 @@ export function disconnect() {
         })
 }
   
-export function readyState() {
+function readyState() {
     return mongoose.connection.readyState
 }
 
 export default {
-    mongoose
+    mongoose,
+    connect,
+    disconnect,
+    readyState
 }

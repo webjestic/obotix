@@ -1,43 +1,38 @@
 
-import setup from './setup.js'
-import * as mongo from './mongo.js'
-import * as redis from './redis.js'
-import * as logger from './logger.js'
-import * as xpress from './xpress.js'
+import mongo from './mongo.js'
+import redis from './redis.js'
+import logger from './logger.js'
+import xpress from './xpress.js'
 
-var obotixApp = undefined
 var config = undefined
+var app = xpress.app
+var express = xpress.express
 
-async function mount(app)  {
-    if (app == undefined || app.mountpath === undefined)
-        throw new Error('Error: app is not an express object.')
-    obotixApp = app
-    await setup.run()
-    await xpress.run()
-}
+function setConfig(document) { config = document}
 
-function listen(callback) {
-    xpress.updateAppUse(obotixApp, xpress.responses)
-    obotixApp.listen(process.env.OAPI_PORT, () => {
-        if (callback !== undefined && typeof callback === 'function')
-            callback()
-    })
-}
+function getLogger(namespace) { return logger.getLogger(namespace) }
+function setLogLevel(level) { logger.setLogLevel(level) }
 
+async function init() { await xpress.init() }
+function listen(callback) { xpress.listen(callback) }
+function getRouter() { return xpress.getRouter() }
 function addRequestMiddleware(middlware) { xpress.addRequestMiddleware(middlware) }
 function addRouter(router) { xpress.addRouter(router) }
 function addResponseMiddleware(middlware) { xpress.addResponseMiddleware(middlware) }
 
-function assignConfig(document) { config = document}
-
 export default {
-    mount,
-    listen,
-    assignConfig,
+    app,
+    express,
     mongo,
     redis,
     config,
     logger,
+    init,
+    listen,
+    setConfig,
+    getLogger,
+    setLogLevel,
+    getRouter,
     addRequestMiddleware,
     addRouter,
     addResponseMiddleware
