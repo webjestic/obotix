@@ -4,15 +4,15 @@ import logger from './logger.js'
 
 var log = undefined
 
-var cmd = undefined
-var pub = undefined
+var connection = undefined
+var pubChannel = undefined
 
 async function connect() {
     log = logger.getLogger('engine:redis')
     if (process.env.OAPI_REDIS !== undefined) {
         try {
-            cmd = new Redis(process.env.OAPI_REDIS)
-            pub = new Redis(process.env.OAPI_REDIS)
+            connection = new Redis(process.env.OAPI_REDIS)
+            pubChannel = new Redis(process.env.OAPI_REDIS)
             log.info('Redis connected and publisher channel open.')
         } catch(err) {
             log.error(err)
@@ -22,7 +22,8 @@ async function connect() {
 }
 
 export default {
-    cmd,
-    pub,
+    Redis,
+    connection,
+    pubChannel,
     connect
 }
