@@ -24,7 +24,7 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
-    "fnlib": "^0.1.2",
+    "fnlib": "^0.1.4",
     "ioredis": "^5.2.3",
     "logish": "^1.0.12",
     "mongoose": "^6.6.3"
