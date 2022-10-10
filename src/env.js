@@ -15,7 +15,6 @@ function validate() {
     if (process.env.OAPI_PORT === undefined) errors.push('ERROR: OAPI_PORT is undefined env variable.')
     if (process.env.OAPI_MONGO === undefined) errors.push('ERROR: OAPI_MONGO is undefined env variable.')
     if (process.env.OAPI_REDIS === undefined) errors.push('ERROR: OAPI_REDIS is undefined env variable.')
-    if (process.env.OAPI_JWT_KEY === undefined) errors.push('ERROR: OAPI_JWT_KEY is undefined env variable.')
 
     if (errors.length > 0) {
         for (let err in errors)
