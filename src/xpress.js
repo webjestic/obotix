@@ -13,7 +13,7 @@ var routes = []
 var responses = []
 
 async function addRequestMiddleware(middlware) {
-    log.debug('addRequestMiddleware')
+    log.trace('addRequestMiddleware')
     if (middlware !== undefined && typeof middlware === 'function')
         requests.push(middlware)
     else 
@@ -21,7 +21,7 @@ async function addRequestMiddleware(middlware) {
 }
 
 async function addRouter(router) {
-    log.debug('addRouter')
+    log.trace('addRouter')
     if (router !== undefined && typeof router === 'function')
         routes.push(router)
     else 
@@ -29,7 +29,7 @@ async function addRouter(router) {
 }
 
 async function addResponseMiddleware(middlware) {
-    log.debug('addResponseMiddleware')
+    log.trace('addResponseMiddleware')
     if (middlware !== undefined && typeof middlware === 'function')
         responses.push(middlware)
     else

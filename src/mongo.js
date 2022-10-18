@@ -5,7 +5,7 @@ import logger from './logger.js'
 var log = undefined
 
 async function connect() {
-    log = logger.getLogger('engine:mongo')
+    log = logger.getLogger('obotix:mongo')
     const connstr = `${process.env.OAPI_MONGO}?retryWrites=true&w=majority`
 
     try {
