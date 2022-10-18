@@ -8,7 +8,20 @@ var config = undefined
 var app = undefined //xpress.app
 var express = undefined // xpress.express
 
-function setConfig(document) { config = document}
+function setConfig(document) { 
+    config = document 
+    if (config.logish !== undefined && config.logish.level) 
+        logger.setLogLevel(config.logish.level)
+}
+function getConfig() { return config }
+
+function responseTemplate() {
+    return {
+        status: 200,
+        message: '',
+        data: {}
+    }
+}
 
 async function init() { 
     await xpress.init() 
@@ -30,15 +43,17 @@ export default {
     express,
     mongo,
     redis,
-    config,
     logger,
+    config,
+    setConfig,
+    getConfig,
     init,
     listen,
-    setConfig,
     getLogger,
     setLogLevel,
     getRouter,
     addRequestMiddleware,
     addRouter,
-    addResponseMiddleware
+    addResponseMiddleware,
+    responseTemplate
 }

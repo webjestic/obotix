@@ -8,12 +8,12 @@ var connection = undefined
 var pubChannel = undefined
 
 async function connect() {
-    log = logger.getLogger('engine:redis')
+    log = logger.getLogger('obotix:redis')
     if (process.env.OAPI_REDIS !== undefined) {
         try {
             connection = new Redis(process.env.OAPI_REDIS)
             pubChannel = new Redis(process.env.OAPI_REDIS)
-            log.info('Redis connected and publisher channel open.')
+            log.info('Redis connected and publisher channel opened.')
         } catch(err) {
             log.error(err)
         }
