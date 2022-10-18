@@ -6,6 +6,8 @@ import logger from './logger.js'
 import http_notFound from './middleware/http_notFound.js'
 import http_internalError from './middleware/http_internalError.js'
 
+import healthzRoute from './routes/healthz_route.js'
+
 var app = undefined
 var log = undefined
 var requests = []
@@ -56,7 +58,8 @@ async function mount() {
     //
     app.use(express.json())
     app.use(express.urlencoded({ extended: false }))
-
+    
+    app.use('/healthz', healthzRoute(getRouter()))
     updateAppUse(requests)
     updateAppUse(routes)
     updateAppUse(responses)
