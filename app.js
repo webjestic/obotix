@@ -1,17 +1,23 @@
 
 
 import obotix from './src/index.js'
-
 await obotix.init()
-const router = obotix.getRouter()
 
-const log = obotix.getLogger('app:index')
-obotix.setLogLevel('trace')
 
-obotix.addRequestMiddleware( (req, res, next) => { next() } )
-obotix.addRouter(router)
-obotix.addResponseMiddleware( (req, res, next) => { next() } )
+const app = obotix.getApp()
+const log = obotix.getLogger('main:index')
 
-obotix.listen( () => {
-    log.info(`Service is listening on port ${process.env.OAPI_PORT}.`)
+app.use(obotix.addUrlEncodedMiddleware())
+app.use(obotix.addHealthzRouter())
+
+// add routers here
+
+app.use(obotix.addErrorHandlingMiddleware())
+
+
+const port = process.env.OAPI_PORT || 3000
+app.listen(port, () => {
+    log.info(`HTTP Server is listening on port ${port}. PID:${process.pid}`)
 })
+
+

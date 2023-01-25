@@ -1,8 +1,18 @@
+/**
+ *  Responsible for handling all HTTP Status 404 - Not Found
+ */
+
 import logger from '../logger.js'
 
-const log = logger.getLogger('obotix:404')
+const log = logger.getLogger('mw:404')
 
 
+/**
+ *
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {function} next 
+ */
 // eslint-disable-next-line no-unused-vars
 export default function (req, res, next){
     log.debug(`404 encounter for ${req.method} ${req.path}`)
