@@ -16,6 +16,8 @@ var stats = {
     'totalRequests' : 0,
     'internalErrors': 0,
     'notFounds' : 0,
+    'live' : 0,
+    'ready' : 0,
     'host' : (os.hostname()),
     'started' : (new Date(Date.now()).toISOString()),
     'running' : ''
@@ -54,12 +56,18 @@ function getStats(req, res) {
 */
 // eslint-disable-next-line no-unused-vars
 function updateStats(req, res) {
-    if (req.method === 'GET') stats.get = stats.get +1
-    if (req.method === 'PUT') stats.put = stats.put +1
-    if (req.method === 'POST') stats.post = stats.post +1
-    if (req.method === 'DELETE') stats.delete = stats.delete +1
 
-    stats.totalRequests = stats.totalRequests + 1
+    if (req.path === '/live') stats.live = stats.live + 1
+    if (req.path === '/ready') stats.ready = stats.ready + 1
+
+    if (req.path !== '/live' && req.path !== '/ready') {
+        if (req.method === 'GET') stats.get = stats.get +1
+        if (req.method === 'PUT') stats.put = stats.put +1
+        if (req.method === 'POST') stats.post = stats.post +1
+        if (req.method === 'DELETE') stats.delete = stats.delete +1
+
+        stats.totalRequests = stats.totalRequests + 1
+    }
     return true
 }
 
