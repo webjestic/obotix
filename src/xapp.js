@@ -4,6 +4,7 @@
 
 import express from 'express'
 
+
 // SWAGGER DOCUMENTATION
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
@@ -84,6 +85,7 @@ function addErrorHandlingMiddleware() {
 function addHealthzRouter() {
     return healthz(getRouter())
 }
+
 
 /**
  * 

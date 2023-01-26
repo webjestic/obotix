@@ -7,6 +7,7 @@ await obotix.init()
 const app = obotix.getApp()
 const log = obotix.getLogger('main:index')
 
+
 /** Early Middleware */
 app.use(obotix.addUrlEncodedMiddleware())
 app.use(obotix.addStatsMiddleware())

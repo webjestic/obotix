@@ -5,6 +5,7 @@
 import logger from '../logger.js'
 import stats from '../controllers/stats.js'
 
+
 const log = logger.getLogger('mw:404')
 
 
