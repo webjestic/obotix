@@ -3,6 +3,8 @@
  */
 
 import logger from '../logger.js'
+import stats from '../controllers/stats.js'
+
 
 const log = logger.getLogger('mw:404')
 
@@ -19,5 +21,6 @@ export default function (req, res, next){
     const response = {
         'message' : `404 Not found: ${req.method} ${req.path}`
     }
+    stats.incNotFound()
     res.status(404).json(response)
 }

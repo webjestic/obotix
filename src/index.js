@@ -14,10 +14,16 @@ var express = undefined
 const getApp = xapp.getApp
 const getRouter = xapp.getRouter
 const addUrlEncodedMiddleware = xapp.addUrlEncodedMiddleware
+const addSwaggerRouter = xapp.addSwaggerRouter
+
 const addErrorHandlingMiddleware = xapp.addErrorHandlingMiddleware
 const addHealthzRouter = xapp.addHealthzRouter
 const getLogger = logger.getLogger
 const getConfig = config.getConfig
+
+const addStatsMiddleware = xapp.addStatsMiddleware
+const addStatsRouter = xapp.addStatsRouter
+const addUuidRouter = xapp.addUuidRouter
 
 
 /**
@@ -51,6 +57,10 @@ export default {
     getApp,
     getRouter,
     addUrlEncodedMiddleware,
+    addStatsMiddleware,
     addErrorHandlingMiddleware,
-    addHealthzRouter
+    addHealthzRouter,
+    addStatsRouter,
+    addSwaggerRouter,
+    addUuidRouter
 }

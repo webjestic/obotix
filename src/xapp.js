@@ -4,10 +4,22 @@
 
 import express from 'express'
 
+
+// SWAGGER DOCUMENTATION
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+const swaggerDocument = YAML.load('config/swagger.yaml')
+
+/** Middleware */
 import notFound from './middleware/notFound.js'
 import internalError from './middleware/internalError.js'
+import statsMW from './middleware/stats.js'
 
+/** Routes */
 import healthz from './routes/healthz.js'
+import stats from './routes/stats.js'
+import uuid from './routes/uuid.js'
+
 
 var app = undefined
 
@@ -36,6 +48,28 @@ function addUrlEncodedMiddleware() {
  * 
  * @returns 
  */
+function addSwaggerRouter() {
+    var router = getRouter()
+    router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+    return router
+}
+
+
+/**
+ * 
+ * @returns 
+ */
+function addStatsMiddleware() {
+    var router = getRouter()
+    router.use(statsMW)
+    return router
+}
+
+
+/**
+ * 
+ * @returns 
+ */
 function addErrorHandlingMiddleware() {
     var router = getRouter()
     router.use(notFound)
@@ -55,6 +89,23 @@ function addHealthzRouter() {
 
 /**
  * 
+ * @returns 
+ */
+function addUuidRouter() {
+    return uuid(getRouter())
+}
+
+
+/**
+ * 
+ */
+function addStatsRouter() {
+    return stats(getRouter())
+}
+
+
+/**
+ * 
  */
 async function init() {
     if (app === undefined) 
@@ -69,5 +120,9 @@ export default {
     getRouter,
     addUrlEncodedMiddleware,
     addErrorHandlingMiddleware,
-    addHealthzRouter
+    addStatsMiddleware,
+    addSwaggerRouter,
+    addHealthzRouter,
+    addStatsRouter,
+    addUuidRouter
 }
