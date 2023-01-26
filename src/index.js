@@ -1,59 +1,56 @@
+/**
+ * 
+ */
 
-import mongo from './mongo.js'
-import redis from './redis.js'
+import dotenv from 'dotenv'
 import logger from './logger.js'
-import xpress from './xpress.js'
+import db from './db.js'
+import config from './config.js'
+import logtodb from './logtodb.js'
+import xapp from './xapp.js'
 
-var config = undefined
-var app = undefined //xpress.app
-var express = undefined // xpress.express
 
-function setConfig(document) { 
-    config = document 
-    if (config.logish !== undefined && config.logish.level) 
-        logger.setLogLevel(config.logish.level)
-}
-function getConfig() { return config }
+var express = undefined
+const getApp = xapp.getApp
+const getRouter = xapp.getRouter
+const addUrlEncodedMiddleware = xapp.addUrlEncodedMiddleware
+const addErrorHandlingMiddleware = xapp.addErrorHandlingMiddleware
+const addHealthzRouter = xapp.addHealthzRouter
+const getLogger = logger.getLogger
+const getConfig = config.getConfig
 
-function responseTemplate() {
-    return {
-        status: 200,
-        message: '',
-        data: {}
+
+/**
+ * 
+ */
+async function init() {
+    if (express === undefined) {
+        express = xapp.getExpress()
+        dotenv.config()
+        await db.init()
+        await config.init()
+        logtodb.init()
+        await xapp.init()
     }
 }
 
-async function init() { 
-    await xpress.init() 
-    app = xpress.app
-    express = xpress.express
-}
-
-function getLogger(namespace) { return logger.getLogger(namespace) }
-function setLogLevel(level) { logger.setLogLevel(level) }
-
-function listen(callback) { xpress.listen(callback) }
-function getRouter() { return xpress.getRouter() }
-function addRequestMiddleware(middlware) { xpress.addRequestMiddleware(middlware) }
-function addRouter(router) { xpress.addRouter(router) }
-function addResponseMiddleware(middlware) { xpress.addResponseMiddleware(middlware) }
 
 export default {
-    app,
-    express,
-    mongo,
-    redis,
-    logger,
-    config,
-    setConfig,
-    getConfig,
     init,
-    listen,
+
+    logger,
     getLogger,
-    setLogLevel,
+
+    config,
+    getConfig,
+
+    db,
+
+    /** exapp */
+    express,
+    getApp,
     getRouter,
-    addRequestMiddleware,
-    addRouter,
-    addResponseMiddleware,
-    responseTemplate
+    addUrlEncodedMiddleware,
+    addErrorHandlingMiddleware,
+    addHealthzRouter
 }

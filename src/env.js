@@ -1,20 +1,23 @@
+/**
+ * 
+ */
 
 import * as dotenv from 'dotenv'
 
-function load() {
-    dotenv.config()
-    if (!validate())
-        throw new Error('Some environment variables are undefined.')
-}
 
+
+/**
+ * 
+ * @returns {boolean}
+ */
 function validate() {
     let errors = []
     if (process.env.NODE_ENV === undefined) errors.push('ERROR: NODE_ENV is undefined env variable.')
-    if (process.env.OAPI_CONFIG_APP === undefined) errors.push('ERROR: OAPI_CONFIG_APP is undefined env variable.')
-    if (process.env.OAPI_DOMAIN === undefined) errors.push('ERROR: OAPI_DOMAIN is undefined env variable.')
     if (process.env.OAPI_PORT === undefined) errors.push('ERROR: OAPI_PORT is undefined env variable.')
-    if (process.env.OAPI_MONGO === undefined) errors.push('ERROR: OAPI_MONGO is undefined env variable.')
-    if (process.env.OAPI_REDIS === undefined) errors.push('ERROR: OAPI_REDIS is undefined env variable.')
+    if (process.env.OAPI_DB_NODE === undefined) errors.push('ERROR: OAPI_DB_NODE is undefined env variable.')
+    if (process.env.OAPI_DB_APP === undefined) errors.push('ERROR: OAPI_DB_APP is undefined env variable.')
+    if (process.env.OAPI_CRYPTO_KEY === undefined) errors.push('ERROR: OAPI_CRYPTO_KEY is undefined env variable.')
+    
 
     if (errors.length > 0) {
         for (let err in errors)
@@ -24,7 +27,16 @@ function validate() {
     return true
 }
 
+
+/**
+ * 
+ */
+async function init() {
+    dotenv.config()
+    if (!validate()) 
+        throw new Error('Some environment variables are undefined.')
+}
+
 export default {
-    load,
-    validate
+    init
 }

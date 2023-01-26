@@ -1,8 +1,15 @@
+/**
+ * 
+ */
 
 import { Logish } from 'logish'
 
-const defaultConfig = {
 
+/**
+ * This is the default configuration for Logish.
+ * Values may be overriden during configuration load.
+ */
+var defaultConfig = {
     'level': 'trace',
     'performanceTime': true,
     'controllers': [
@@ -18,7 +25,7 @@ const defaultConfig = {
                 'error',
                 'fatal'
             ],
-            'format': '%level %namespace %entry %performance',
+            'format': '%datetime %level %namespace %entry %performance',
             'useColor': true
         },
         {
@@ -42,27 +49,80 @@ const defaultConfig = {
             ]
         }
     ]
-    
 }
 
+
+/** An array of all log instances created during the run session */ 
 var logs = []
 
+
+/**
+ * This allows the application to hook into a centralized logging call. 
+ * All instances of Logish will execute this function if it is defined.
+ * Most likely this is being assinged a value from logtodb.js
+ */
+var centralLoggingFunction = undefined
+
+
+/**
+ * Listener will execute the developer attached centralized logging event.
+ * 
+ * @param {Json} logEntry 
+ */
+function logListener(logEntry) {
+    if (centralLoggingFunction !== undefined && typeof centralLoggingFunction === 'function')
+        centralLoggingFunction(logEntry)
+}
+
+
+/**
+ * This is an exported function. allowing an outside source to listen to
+ * add their own function, which executes on every logging event.
+ * 
+ * @param {function} fn 
+ * @returns {boolean}
+ */
+function addEventFunction(fn) {
+    if (typeof fn === 'function')
+        centralLoggingFunction = fn
+    else
+        return false
+    return true
+}
+
+
+/**
+ * Returns an instance of Logish for use within an external module. This function regiters
+ * the instance in the logs array, so any config changes could be applied to all existing instances.
+ * 
+ * @param {String} namespace 
+ * @returns {Object} a new instance of Logish
+ */
 function getLogger(namespace) {
-    //let log = new Logish(config.doc.logish)
-    let log = new Logish(defaultConfig)
+    const log = new Logish( defaultConfig )
     log.setNamespace(namespace)
+    log.use(logListener)
     logs.push(log)
     return log
 }
 
-function setLogLevel(logLevel) {
-    for (let log of logs) 
-        log.setLevel(logLevel)
+
+/**
+ * Sets the logging level for all existing instances within the "logs" array.
+ * 
+ * @param {String} level 
+ */
+function setLevel(level) {
+    defaultConfig.level = level
+    for (var log of logs) 
+        log.setLevel(level)
 }
 
-export default {
+
+export default { 
     defaultConfig,
-    logs,
-    setLogLevel,
-    getLogger
+    addEventFunction,
+    getLogger,
+    setLevel
 }
+
