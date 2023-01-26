@@ -4,6 +4,6 @@
 #
 openapi: 3.0.0
 info:
-  title: obotix-api
+  title: obotix
   description: Developer API documentation for the [obotix-api](https://github.com/webjestic/obotix-api) backend server.
   version: 0.1.0

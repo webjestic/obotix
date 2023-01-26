@@ -3,6 +3,7 @@
  */
 
 import logger from '../logger.js'
+import stats from '../controllers/stats.js'
 
 const log = logger.getLogger('mw:500')
 
@@ -21,5 +22,6 @@ export default function (err, req, res, next){
         'message': `HTTP Status Code 500 - Internal Error encountered on: ${req.method} ${req.path}`,
         'error' : err.message
     }
+    stats.incInternalErrors()
     res.status(500).json(response)
 }

@@ -7,11 +7,17 @@ await obotix.init()
 const app = obotix.getApp()
 const log = obotix.getLogger('main:index')
 
+/** Early Middleware */
 app.use(obotix.addUrlEncodedMiddleware())
+app.use(obotix.addStatsMiddleware())
+
+/** Routers */
+app.use(obotix.addSwaggerRouter())
 app.use(obotix.addHealthzRouter())
+app.use('/node', obotix.addStatsRouter())
+app.use('/node', obotix.addUuidRouter())
 
-// add routers here
-
+/** Late Middleware */
 app.use(obotix.addErrorHandlingMiddleware())
 
 
