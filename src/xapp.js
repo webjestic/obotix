@@ -4,6 +4,11 @@
 
 import express from 'express'
 
+// SWAGGER DOCUMENTATION
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+const swaggerDocument = YAML.load('config/swagger.yaml')
+
 import notFound from './middleware/notFound.js'
 import internalError from './middleware/internalError.js'
 
@@ -28,6 +33,7 @@ function addUrlEncodedMiddleware() {
     var router = getRouter()
     router.use(express.json())
     router.use(express.urlencoded({ extended: false }))
+    router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
     return router
 }
 
