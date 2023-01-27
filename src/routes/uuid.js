@@ -3,6 +3,8 @@
  */
 
 import uuid from '../controllers/uuid.js'
+import apikey from '../middleware/apikey.js'
+import rateLimit from '../middleware/rateLimit.js'
 
 /**
  * Function accepts a router (ideally a freshly created router) and adds REST methods.
@@ -17,7 +19,7 @@ export default function (router) {
     /**
      * /stats 
      */
-    router.get('/uuid', (req, res) => {
+    router.get('/uuid', rateLimit, apikey, (req, res) => {
         const response = uuid.getUuid(req, res)
         res.status(response.status).json(response.data)
     })

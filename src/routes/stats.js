@@ -3,6 +3,8 @@
  */
 
 import stats from '../controllers/stats.js'
+import apikey from '../middleware/apikey.js'
+import rateLimit from '../middleware/rateLimit.js'
 
 /**
  * Function accepts a router (ideally a freshly created router) and adds REST methods.
@@ -17,7 +19,7 @@ export default function (router) {
     /**
      * /stats 
      */
-    router.get('/', (req, res) => {
+    router.get('/', rateLimit, apikey, (req, res) => {
         const response = stats.getStats(req, res)
         res.status(response.status).json(response.data)
     })
