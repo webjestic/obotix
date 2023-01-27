@@ -1,5 +1,6 @@
 
 
+import fs from 'fs'
 import obotix from './src/index.js'
 await obotix.init()
 
@@ -22,9 +23,11 @@ app.use('/node', obotix.addUuidRouter())
 app.use(obotix.addErrorHandlingMiddleware())
 
 
+var pckg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+
 const port = process.env.OAPI_PORT || 3000
 app.listen(port, () => {
-    log.info(`HTTP Server is listening on port ${port}. PID:${process.pid}`)
+    log.info(`${pckg.name} ${pckg.version} is listening on port ${port}. PID:${process.pid}`)
 })
 
 
