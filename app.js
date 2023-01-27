@@ -27,7 +27,8 @@ var pckg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 
 const port = process.env.OAPI_PORT || 3000
 app.listen(port, () => {
-    log.info(`${pckg.name} ${pckg.version} is listening on port ${port}. PID:${process.pid}`)
+    obotix.system.displayResources(log)
+    log.info(`${pckg.name} ${pckg.version} is listening on port ${port}. PID: ${process.pid}`)
 })
 
 
