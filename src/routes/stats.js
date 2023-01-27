@@ -3,6 +3,7 @@
  */
 
 import stats from '../controllers/stats.js'
+import apikey from '../middleware/apikey.js'
 
 /**
  * Function accepts a router (ideally a freshly created router) and adds REST methods.
@@ -17,7 +18,7 @@ export default function (router) {
     /**
      * /stats 
      */
-    router.get('/', (req, res) => {
+    router.get('/', apikey, (req, res) => {
         const response = stats.getStats(req, res)
         res.status(response.status).json(response.data)
     })
