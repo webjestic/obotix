@@ -3,24 +3,21 @@
  */
 
 
-import os from 'os'
 import fnlib from 'fnlib'
+import system from '../sys.js'
 
 
-
+const started = (new Date(Date.now()).toLocaleString()) //toISOString())
 var stats = {
     'get': 0,
     'put' : 0,
     'post' : 0,
     'delete' : 0,
-    'totalRequests' : 0,
     'internalErrors': 0,
     'notFounds' : 0,
+    'totalRequests' : 0,
     'live' : 0,
-    'ready' : 0,
-    'host' : (os.hostname()),
-    'started' : (new Date(Date.now()).toISOString()),
-    'running' : ''
+    'ready' : 0
 }
 
 
@@ -36,14 +33,20 @@ var stats = {
 // eslint-disable-next-line no-unused-vars
 function getStats(req, res) {
 
-    const onlineForCalc = fnlib.getTimeSince(stats.started)
+    const onlineForCalc = fnlib.getTimeSince(started)
     let onlineFor = `${onlineForCalc.years} years ${onlineForCalc.days} days ${onlineForCalc.hours} hours `
     onlineFor += `${onlineForCalc.minutes} minutes ${onlineForCalc.seconds} seconds`
-    stats.running = onlineFor
+
+    let sys = system.getResourceStrings()
+    sys.started = started
+    sys.running = onlineFor
 
     let response = {
         status: 200,
-        data: stats
+        data: {
+            stats: stats,
+            system: sys
+        }
     }
     return response
 }

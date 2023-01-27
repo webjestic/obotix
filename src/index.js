@@ -8,19 +8,19 @@ import db from './db.js'
 import config from './config.js'
 import logtodb from './logtodb.js'
 import xapp from './xapp.js'
+import system from './sys.js'
 
 
 var express = undefined
 const getApp = xapp.getApp
 const getRouter = xapp.getRouter
-const addUrlEncodedMiddleware = xapp.addUrlEncodedMiddleware
-const addSwaggerRouter = xapp.addSwaggerRouter
-
-const addErrorHandlingMiddleware = xapp.addErrorHandlingMiddleware
-const addHealthzRouter = xapp.addHealthzRouter
 const getLogger = logger.getLogger
 const getConfig = config.getConfig
 
+const addErrorHandlingMiddleware = xapp.addErrorHandlingMiddleware
+const addHealthzRouter = xapp.addHealthzRouter
+const addUrlEncodedMiddleware = xapp.addUrlEncodedMiddleware
+const addSwaggerRouter = xapp.addSwaggerRouter
 const addStatsMiddleware = xapp.addStatsMiddleware
 const addStatsRouter = xapp.addStatsRouter
 const addUuidRouter = xapp.addUuidRouter
@@ -43,6 +43,7 @@ async function init() {
 
 export default {
     init,
+    db,
 
     logger,
     getLogger,
@@ -50,12 +51,13 @@ export default {
     config,
     getConfig,
 
-    db,
+    system,
 
     /** exapp */
     express,
     getApp,
     getRouter,
+
     addUrlEncodedMiddleware,
     addStatsMiddleware,
     addErrorHandlingMiddleware,
