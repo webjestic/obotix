@@ -2,7 +2,7 @@
  * Responsible for handling HTTP Status 500 - Internal Errors
  */
 
-import logger from '../logger.js'
+import logger from '../app/logger.js'
 import stats from '../controllers/stats.js'
 
 

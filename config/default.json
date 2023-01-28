@@ -1,0 +1,52 @@
+{
+  "configs": {
+    "logger" : {
+      "level": "trace", 
+      "logToDb": { 
+        "enabled": true, 
+        "level": "warn"
+      }
+    }
+  },
+  "logish": {
+    "level": "trace",
+    "performanceTime": true,
+    "controllers": [
+      {
+        "name": "console",
+        "active": true,
+        "displayOnlyEnvNamespace": false,
+        "displayLevels": [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+          "fatal"
+        ],
+        "format": "%level %namespace %entry | %performance",
+        "useColor": true
+      },
+      {
+        "name": "file",
+        "active": false,
+        "files": [
+          {
+            "title": "app logs",
+            "active": false,
+            "writeLevels": [
+              "warn",
+              "error",
+              "fatal"
+            ],
+            "format": "[%datetime %level] %namespace %host - %entry %performance",
+            "filename": "logs/app.log",
+            "maxsize_in_mb": 5,
+            "backups_kept": 5,
+            "gzip_backups": false
+          }
+        ]
+      }
+    ]
+  }
+}
