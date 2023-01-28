@@ -2,7 +2,7 @@
  *  Responsible for handling all HTTP Status 404 - Not Found
  */
 
-import logger from '../logger.js'
+import logger from '../app/logger.js'
 import stats from '../controllers/stats.js'
 
 

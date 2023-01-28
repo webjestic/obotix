@@ -2,25 +2,29 @@
  * 
  */
 
-import logger from '../logger.js'
-import db from '../db.js'
+import logger from '../app/logger.js'
+import db from '../app/db.js'
 
 const log = logger.getLogger('ctrl:apikey')
 
-var connDB = undefined
-var apikeySchema = undefined
-var Apikeys = undefined
+
+var dbconn = {
+    connection: undefined,
+    schema: undefined,
+    model: undefined,
+    data: undefined,
+}
 
 
 /**
  * 
  */
 function init() {
-    if (connDB === undefined) {
+    if (dbconn.connection === undefined) {
         try {
-            connDB = db.getConnFromConnStr(process.env.OAPI_DB_NODE) // mytn.db.conn.mytnNode
-            apikeySchema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
-            Apikeys = connDB.model('Apikey', apikeySchema)
+            dbconn.connection = db.getConnFromConnStr(process.env.OAPI_DB_NODE) // mytn.db.conn.mytnNode
+            dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
+            dbconn.model = dbconn.connection.model('Apikey', dbconn.schema)
         } catch(ex) {
             log.error(ex)
         }
@@ -46,7 +50,7 @@ async function verifyApiKey(req, res) {
     log.trace(`Middleware: apikey: API User: ${apiuser} Key: ${apikey}`)
 
     if (apikey && apiuser) {
-        apikeys = await Apikeys.find({ 'user' : apiuser }).exec()
+        apikeys = await dbconn.model.find({ 'user' : apiuser }).exec()
         apikeys = apikeys[0]
         log.debug(apikeys)
 

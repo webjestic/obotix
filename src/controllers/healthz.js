@@ -2,8 +2,8 @@
  * 
  */
 
-import logger from '../logger.js'
-import db from '../db.js'
+import logger from '../app/logger.js'
+import db from '../app/db.js'
 
 const log = logger.getLogger('ctrl:healthz')
 
@@ -64,7 +64,7 @@ function readyCheck(req, res) {
 
 
     if (status === 500) {
-        log.error(`readyCheck failure: connections=${result} `)
+        log.error('readyCheck failure: connections' ,result)
         msg = 'Internal Error'
         result.message = msg
     }

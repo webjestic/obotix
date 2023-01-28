@@ -4,7 +4,7 @@
 
 
 import fnlib from 'fnlib'
-import system from '../sys.js'
+import system from '../app/sys.js'
 
 
 const started = (new Date(Date.now()).toLocaleString()) //toISOString())
