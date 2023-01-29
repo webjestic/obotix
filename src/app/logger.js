@@ -25,7 +25,7 @@ class Logger {
      * @returns instance.
      */
     getLogger(namespace = '') {
-        const log = new Logish( this.efaultConfig )
+        const log = new Logish( this.defaultConfig )
         log.setNamespace(namespace)
         log.use(this.logListener)
         this.logs.push(log)
