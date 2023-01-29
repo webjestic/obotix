@@ -1,10 +1,13 @@
 {
   "configs": {
-    "logger" : {
-      "level": "trace", 
-      "logToDb": { 
-        "enabled": true, 
+    "logger": {
+      "level": "trace",
+      "logToDb": {
+        "enabled": true,
         "level": "warn"
+      },
+      "accesslog": {
+        "enabled": true
       }
     }
   },
@@ -24,7 +27,7 @@
           "error",
           "fatal"
         ],
-        "format": "%level %namespace %entry | %performance",
+        "format": "%level %namespace %entry %performance",
         "useColor": true
       },
       {
