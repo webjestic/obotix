@@ -12,6 +12,8 @@ import Sys from './app/sys.js'
 import statsmw from './middleware/stats.js'
 import internalError from './middleware/internalError.js'
 import notFound from './middleware/notFound.js'
+import accesslog from './middleware/accesslog.js'
+import dbhealth from './middleware/dbhealth.js'
 
 import apikey from './middleware/apikey.js'
 import rateLimit from './middleware/rateLimit.js'
@@ -90,6 +92,12 @@ class Obotix {
             break
         case 'stats':
             this.http.app.use(statsmw)
+            break
+        case 'accesslog':
+            this.http.app.use(accesslog)
+            break
+        case 'dbhealth':
+            this.http.app.use(dbhealth)
             break
         default :
             this.log.error(`addMiddleware Error: ${middlewareName}`)
