@@ -10,6 +10,8 @@ await obotix.init()
 const log = obotix.getLogger('src:index')
 const app = obotix.getApp()
 
+obotix.addMiddleware('accesslog')
+obotix.addMiddleware('dbhealth')
 obotix.addMiddleware('stats')
 
 obotix.addRoute('/', 'healthz')

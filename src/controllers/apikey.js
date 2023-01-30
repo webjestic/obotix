@@ -54,11 +54,15 @@ async function verifyApiKey(req, res) {
         apikeys = apikeys[0]
         log.debug(apikeys)
 
-        if (apikeys.user === apiuser && apikeys.apikey === apikey && apikeys.enabled == true)
-            allowAccess = true
+        try {
+            if (apikeys.user === apiuser && apikeys.apikey === apikey && apikeys.enabled == true)
+                allowAccess = true
 
-        if (apikeys.expirey <= Date.now()) 
+            if (apikeys.expirey <= Date.now()) 
+                allowAccess = false
+        } catch(ex) {
             allowAccess = false
+        }
     }
 
     return allowAccess
