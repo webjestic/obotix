@@ -10,16 +10,9 @@ await obotix.init()
 const log = obotix.getLogger('src:index')
 const app = obotix.getApp()
 
-obotix.addMiddleware('accesslog')
-obotix.addMiddleware('dbhealth')
-obotix.addMiddleware('stats')
-
-obotix.addRoute('/', 'healthz')
-obotix.addRoute('/node', 'stats')
-obotix.addRoute('/node', 'uuid')
-
-obotix.addMiddleware('notFound')
-obotix.addMiddleware('internalError')
+// Add middleware & Routes here
+// ex:
+// app.use('/', myRoute(obotix.getRouter()) )
 
 
 const port = process.env.OAPI_PORT || 3000
