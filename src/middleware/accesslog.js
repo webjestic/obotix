@@ -22,7 +22,6 @@ const log = logger.getLogger('mw:accesslog')
  */
 // eslint-disable-next-line no-unused-vars
 export default function (req, res, next){
-    log.trace('Middleware: accesslog')
 
     const accesslogs = dbconn()
 

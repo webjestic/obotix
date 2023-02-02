@@ -59,10 +59,14 @@ async function getAccesslogs(req, res) {
                     result.count = 0
                     result.entries = []
                     for (const [key, entry] of Object.entries(doc)) {
-                        var logentry = `${new Date(entry.timestamp).toISOString()} ${entry.ip} ${entry.uid}`
-                        logentry = logentry + ` ${entry.access} ${entry.svr} ${entry.apikeyuser}`
-                        result.entries.push(logentry)
-                        result.count = Number(key) + 1
+                        try {
+                            var logentry = `${new Date(entry.timestamp).toISOString()} ${entry.ip} ${entry.uid}`
+                            logentry = logentry + ` ${entry.access} ${entry.svr} ${entry.apikeyuser}`
+                            result.entries.push(logentry)
+                            result.count = Number(key) + 1
+                        } catch(ex) {
+                            log.error(ex)
+                        }
                     }
                 } else
                     result = doc
@@ -78,8 +82,38 @@ async function getAccesslogs(req, res) {
 
 
 // eslint-disable-next-line no-unused-vars
-function deleteAccessLogs(req, res) {
-    
+async function deleteAccessLogs(req, res) {
+
+    log.debug('query', req.query)
+    const accesslogs = dbconn()
+
+    var query = getQuery(req)
+
+    log.debug(`query length ${Object.keys(query).length}`)
+    if (Object.keys(query).length === 0) {
+        return new Promise((resolve, reject) => {
+            reject({ status: 400, message: 'Query Params Required.'})
+        })
+    }
+
+
+
+    if (req.query.deleteall !== undefined && req.query.deleteall === 'true') 
+        query = {}
+        
+    return accesslogs.model.deleteMany(query).exec()
+        .then(response => {
+            let result = {
+                status: 200,
+                message: 'OK',
+                data: response
+            }
+            return result
+        }).catch(err => {
+            log.error(err)
+            return err  
+        })
+
 }
 
 export default {
