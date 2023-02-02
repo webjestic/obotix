@@ -17,6 +17,7 @@ import dbhealth from '../middleware/dbhealth.js'
 import healthz from '../routes/healthz.js'
 import stats from '../routes/stats.js'
 import uuid from '../routes/uuid.js'
+import accesslogRoute from '../routes/accesslog.js'
 
 
 class Http {
@@ -34,13 +35,14 @@ class Http {
 
         this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(YAML.load('config/swagger.yaml')))
 
-        this.app.use(accesslog)
         this.app.use(dbhealth)
+        this.app.use(accesslog)
         this.app.use(statsmw)
 
         this.app.use('/', healthz(this.getRouter()))
         this.app.use('/node', stats(this.getRouter()))
         this.app.use('/node', uuid(this.getRouter()))
+        this.app.use('/node', accesslogRoute(this.getRouter()))
     }
 
 

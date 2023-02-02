@@ -27,7 +27,7 @@
           "error",
           "fatal"
         ],
-        "format": "%level %namespace %entry %performance",
+        "format": "%datetime %level %namespace %entry %performance",
         "useColor": true
       },
       {
