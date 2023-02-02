@@ -84,31 +84,26 @@ async function getAccesslogs(req, res) {
 // eslint-disable-next-line no-unused-vars
 async function deleteAccessLogs(req, res) {
 
-    log.debug('query', req.query)
     const accesslogs = dbconn()
 
+    log.debug('query', req.query)
     var query = getQuery(req)
 
+    // if no parameters were sent, return a rejected promise.
     log.debug(`query length ${Object.keys(query).length}`)
-    if (Object.keys(query).length === 0) {
+    if ((Object.keys(query).length === 0) && req.query.deleteall === undefined) {
         return new Promise((resolve, reject) => {
             reject({ status: 400, message: 'Query Params Required.'})
         })
     }
 
-
-
+    // if the mighty deleteall param was sent, set the query to trash it all.
     if (req.query.deleteall !== undefined && req.query.deleteall === 'true') 
         query = {}
         
     return accesslogs.model.deleteMany(query).exec()
         .then(response => {
-            let result = {
-                status: 200,
-                message: 'OK',
-                data: response
-            }
-            return result
+            return response
         }).catch(err => {
             log.error(err)
             return err  

@@ -3,6 +3,8 @@
  */
 
 import accesslog from '../controllers/accesslog.js'
+import apikey from '../middleware/apikey.js'
+import rateLimit from '../middleware/rateLimit.js'
 
 /**
  * Function accepts a router (ideally a freshly created router) and adds REST methods.
@@ -14,31 +16,28 @@ import accesslog from '../controllers/accesslog.js'
  */
 export default function (router) {
 
-
     // eslint-disable-next-line no-unused-vars
-    router.get('/accesslogs', async (req, res) => {
+    router.get('/accesslogs', apikey, rateLimit, async (req, res) => {
         accesslog.getAccesslogs(req, res)
             .then(response => {
                 res.status(200).json(response)
             }).catch(err => {
-                res.status(500).json(err)
+                if (err.status !== undefined) res.status(err.status).json(err)
+                else res.status(500).json(err)
             })
     })
 
 
     // eslint-disable-next-line no-unused-vars
-    router.delete('/accesslogs', (req, res) => {
+    router.delete('/accesslogs', apikey, rateLimit, async (req, res) => {
         accesslog.deleteAccessLogs(req, res)
             .then(response => {
                 res.status(200).json(response)
             }).catch(err => {
-                if (err.status !== undefined)
-                    res.status(err.status).json(err)
-                else
-                    res.status(500).json(err)
+                if (err.status !== undefined) res.status(err.status).json(err)
+                else res.status(500).json(err)
             })
     })
-
     
     return router
 }
