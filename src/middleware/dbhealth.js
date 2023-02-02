@@ -18,7 +18,6 @@ const log = logger.getLogger('mw:dbhealth')
  */
 // eslint-disable-next-line no-unused-vars
 export default function (req, res, next){
-    log.trace('Middleware: dbhealth')
 
     let result = undefined
     try {

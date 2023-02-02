@@ -3,32 +3,12 @@
  */
 
 import logger from '../app/logger.js'
-import db from '../app/db.js'
 import config from '../app/config.js'
 import os from 'os'
 
-const log = logger.getLogger('ctrl:accesslog')
+import dbconn from '../models/accesslog.js'
 
-
-var dbconn = {
-    connection: undefined,
-    schema: undefined,
-    model: undefined,
-    data: undefined,
-}
-
-
-function init() {
-    if (dbconn.connection === undefined) {
-        try {
-            dbconn.connection = db.getConnFromConnStr(process.env.OAPI_DB_NODE) // mytn.db.conn.mytnNode
-            dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
-            dbconn.model = dbconn.connection.model('Accesslog', dbconn.schema)
-        } catch(ex) {
-            log.error(ex)
-        }
-    }
-}
+const log = logger.getLogger('mw:accesslog')
 
 
 /**
@@ -42,38 +22,36 @@ function init() {
  */
 // eslint-disable-next-line no-unused-vars
 export default function (req, res, next){
-    log.trace('Middleware: accesslog')
-    if (dbconn.connection === undefined) init()
+
+    const accesslogs = dbconn()
 
     if (config.getConfig().logger.accesslog.enabled) {
-        if (dbconn.connection !== undefined) {
-            if (req.path !== '/live' && req.path !== '/ready') {
+        if (req.path !== '/live' && req.path !== '/ready') {
                 
-                const rip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
-                const dt = Date.now()
-                const ts = new Date(dt).toISOString()
-                const uid = req.header('uid') || 'NA'
-                const apiuser = req.header('x-api-user') || 'guest'
+            const rip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+            const dt = Date.now()
+            const ts = new Date(dt)
+            const uid = req.header('uid') || 'NA'
+            const apiuser = req.header('x-api-user') || 'guest'
     
-                const entry = `${ts} | ${os.hostname} | ${rip} | ${uid} | ${req.method} ${req.path}`
-                const acceessEntry = { 
-                    access: `${req.method} ${req.path}`,
-                    uid: uid,
-                    ip: rip,
-                    svr: `${os.hostname}`,
-                    timestamp: ts,
-                    apikeyuser: apiuser
-                    // log: entry
-                }
+            const entry = `${new Date(ts).toISOString()} | ${os.hostname} | ${rip} | ${uid} | ${req.method} ${req.path}`
+            const acceessEntry = { 
+                access: `${req.method} ${req.path}`,
+                uid: uid,
+                ip: rip,
+                svr: `${os.hostname}`,
+                timestamp: ts,
+                apikeyuser: apiuser
+                // log: entry
+            }
 
-                try {
-                    log.trace(entry)
-                    dbconn.model.create(acceessEntry, (err) => {
-                        if (err) return log.error(err)
-                    })
-                } catch(ex) {
-                    log.error(ex)
-                }
+            try {
+                log.trace(entry)
+                accesslogs.model.create(acceessEntry, (err) => {
+                    if (err) return log.error(err)
+                })
+            } catch(ex) {
+                log.error(ex)
             }
         }
     }

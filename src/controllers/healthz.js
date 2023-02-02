@@ -4,8 +4,17 @@
 
 import logger from '../app/logger.js'
 import db from '../app/db.js'
+import fs from 'fs'
 
 const log = logger.getLogger('ctrl:healthz')
+
+var ver = 0
+try {
+    let pckg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    ver = pckg.version
+} catch (ex) {
+    console.log('healthz/live error getting package.')
+}
 
 
 /**
@@ -22,7 +31,8 @@ function liveCheck(req, res) {
     return { 
         status: 200,
         data: {
-            status: 'OK' 
+            status: 'OK',
+            version: ver
         }
     }
 }

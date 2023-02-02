@@ -91,6 +91,18 @@ class Config extends EventEmitter {
     }
 
 
+    async saveFirstConfig() {
+        try {
+            Config.create(this.defaultConfig, (err) => {
+                if (err) return console.log(err)
+                // saved!
+            })
+        } catch(ex) {
+            this.log.error(ex)
+        }
+    }
+
+
     getConfig() {
         return this.dbconn.data
     }
