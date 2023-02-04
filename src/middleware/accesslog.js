@@ -25,7 +25,8 @@ export default function (req, res, next){
 
     const accesslogs = dbconn()
 
-    if (config.getConfig().logger.accesslog.enabled) {
+    const conf = config.getConfig()
+    if (conf.logger.accesslog.enabled) {
         if (req.path !== '/live' && req.path !== '/ready') {
                 
             const rip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 

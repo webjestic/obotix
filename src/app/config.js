@@ -2,7 +2,7 @@
 
 
 import logger from './logger.js'
-import db from './db.js'
+import dbconn from '../models/config.js'
 import fs from 'fs'
 import { EventEmitter } from 'events'
 
@@ -10,14 +10,7 @@ import { EventEmitter } from 'events'
 
 class Config extends EventEmitter {
 
-    dbconn = {
-        connection: undefined,
-        schema: undefined,
-        model: undefined,
-        data: undefined,
-        onChange: undefined,
-    }
-
+    dbconn = undefined
     defaultConfig = (JSON.parse(fs.readFileSync('config/default.json', 'utf8'))).configs
 
     log = logger.getLogger('app:config')
@@ -27,9 +20,7 @@ class Config extends EventEmitter {
     async init() {
         this.log.debug('Initializing remote configuration.')
         try {
-            this.dbconn.connection = db.getConnFromConnStr(process.env.OAPI_DB_NODE) 
-            this.dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
-            this.dbconn.model = await this.dbconn.connection.model('Config', this.dbconn.schema)
+            this.dbconn = dbconn()
 
             this.setConfigWatch()
             this.setupDbListeners()
