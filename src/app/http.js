@@ -17,6 +17,7 @@ import dbhealth from '../middleware/dbhealth.js'
 import healthz from '../routes/healthz.js'
 import stats from '../routes/stats.js'
 import uuid from '../routes/uuid.js'
+import configRoute from '../routes/config.js'
 import accesslogRoute from '../routes/accesslog.js'
 
 
@@ -42,6 +43,7 @@ class Http {
         this.app.use('/', healthz(this.getRouter()))
         this.app.use('/node', stats(this.getRouter()))
         this.app.use('/node', uuid(this.getRouter()))
+        this.app.use('/node', configRoute(this.getRouter()))
         this.app.use('/node', accesslogRoute(this.getRouter()))
     }
 
