@@ -57,14 +57,34 @@ function getQuery(req) {
     if (req.query.apikey !== undefined)  query.apikey = req.query.apikey 
     if (req.query.user !== undefined) query.user = req.query.user
     if (req.query.isexpired !== undefined) {
-        if (req.query.isexpired === 'true') {
-            // var today = (new Date(Date.now())).toLocale/DateString()
-            // today = today.substring(0, today.indexOf('T'))
+        if (req.query.isexpired === 'true') 
             query.expirey = { '$lte': new Date(Date.now()) }   
-        }
+        
     }
 
     return query
+}
+
+
+function scrubBody(req) {
+    var body = {}
+    log.debug(req.body)
+
+    if (req.body.apikey !== undefined) body.apikey = req.body.apikey
+    if (req.body.user !== undefined) body.user = req.body.user 
+    if (req.body.expirey !== undefined) body.expirey = req.body.expirey
+    if (req.body.enabled !== undefined) {
+        if (req.body.enabled === true) body.enabled = true
+        if (req.body.enabled === false) body.enabled = false
+    }
+
+    if (body.apikey === undefined ||
+        body.user === undefined ||
+        body.expirey === undefined ||
+        body.enabled === undefined)
+        body = false
+
+    return body
 }
 
 
@@ -92,13 +112,38 @@ async function getApiKey(req, res) {
 
 
 // eslint-disable-next-line no-unused-vars
-async function putApiKey(req, res) {
+async function postApiKey(req, res) {
     const dbconn = dbcollection()
+
+    const body = scrubBody(req)
+    if (body === false) {
+        return new Promise((resolve, reject) => {
+            reject({ status: 400, message: 'Invalid document body.'})
+        })
+    }
+
+    // using await instead of chaining multiple then statements - await is NON-BLOCKING the main thread
+    const existingDoc = await getApiKey({ query: { apikey: body.apikey, user: body.user }}, {})
+    if (existingDoc !== undefined) {
+        return new Promise((resolve, reject) => {
+            reject({ status: 400, message: 'Document already exists.', doc: existingDoc})
+        })
+    } else {
+        return dbconn.model.create(body)
+            .then(doc => {
+                return doc
+            }).catch(err => {
+                log.errpr(err)
+                return err
+            })
+    }
+
+
 }
 
 
 // eslint-disable-next-line no-unused-vars
-async function postApiKey(req, res) {
+async function putApiKey(req, res) {
     const dbconn = dbcollection()
 }
 

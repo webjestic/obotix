@@ -29,8 +29,8 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.put('/apikey', rateLimit, apikey, async (req, res) => {
-        configs.putApiKey(req, res)
+    router.post('/apikey', rateLimit, apikey, async (req, res) => {
+        configs.postApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)
             }).catch(err => {
