@@ -61,6 +61,7 @@ function getQuery(req) {
             query.expirey = { '$lte': new Date(Date.now()) }   
         
     }
+    if (req.query.role !== undefined) query.role = req.query.role
 
     return query
 }
@@ -189,6 +190,29 @@ async function putApiKey(req, res) {
 // eslint-disable-next-line no-unused-vars
 async function deleteApiKey(req, res) {
     const dbconn = dbcollection()
+
+    log.debug('query', req.query)
+    var query = getQuery(req)
+
+    // if no parameters were sent, return a rejected promise.
+    log.debug(`query length ${Object.keys(query).length}`)
+    if ((Object.keys(query).length === 0)) {
+        return new Promise((resolve, reject) => {
+            reject({ status: 400, message: 'Query Params Required.'})
+        })
+    }
+
+    
+    log.fatal(`DELETE: ApiKey by ${req.header['x-api-user']}`, query)
+    return dbconn.model.deleteMany(query).exec()
+        .then(response => {
+            log.warn('DELETE: Success', response)
+            return response
+        }).catch(err => {
+            log.error(err)
+            return err  
+        })
+
 }
 
 

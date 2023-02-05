@@ -13,7 +13,7 @@ export default function () {
         dbconn = {
             connection: undefined,
             schema: undefined,
-            model: undefined,
+            model: undefined
         }
 
         try {
