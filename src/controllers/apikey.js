@@ -77,6 +77,7 @@ function scrubBody(req) {
         if (req.body.enabled === true) body.enabled = true
         if (req.body.enabled === false) body.enabled = false
     }
+    if (req.body.role !== undefined) body.level = req.body.role
 
     if (body.apikey === undefined ||
         body.user === undefined ||
@@ -86,7 +87,6 @@ function scrubBody(req) {
 
     return body
 }
-
 
 
 // eslint-disable-next-line no-unused-vars
@@ -103,7 +103,7 @@ async function getApiKey(req, res) {
 
     return dbconn.model.find(query, projection).limit(paginate.limit).skip(paginate.page).exec()
         .then(doc => {
-            return doc[0]
+            return doc
         }).catch(err => {
             log.error(err)
             return err
@@ -116,13 +116,15 @@ async function postApiKey(req, res) {
     const dbconn = dbcollection()
 
     const body = scrubBody(req)
+
     if (body === false) {
         return new Promise((resolve, reject) => {
             reject({ status: 400, message: 'Invalid document body.'})
         })
     }
 
-    // using await instead of chaining multiple then statements - await is NON-BLOCKING the main thread
+    // using await instead of chaining multiple then statements
+    // await is NON-BLOCKING for the main interpreter
     const existingDoc = await getApiKey({ query: { apikey: body.apikey, user: body.user }}, {})
     if (existingDoc !== undefined) {
         return new Promise((resolve, reject) => {
@@ -145,6 +147,42 @@ async function postApiKey(req, res) {
 // eslint-disable-next-line no-unused-vars
 async function putApiKey(req, res) {
     const dbconn = dbcollection()
+
+    if (req.body.apikey !== undefined && typeof req.body.apikey === 'string')
+        var filter = { apikey: req.body.apikey }
+    else {
+        return new Promise((resolve, reject) => {
+            reject({ status: 400, message: 'apikey required for update.'})
+        })
+    }
+
+    // options.projection will return only the field updates included in req.body plus the _id and filter
+    const options = { 
+        projection: {
+            _id: 0,
+            __v: 0
+        },
+        upsert: true,
+        new: true
+    }
+
+    var body = {}
+    if (req.body.enabled !== undefined && typeof req.body.enabled === 'boolean') body.enabled = req.body.enabled
+    if (req.body.expirey !== undefined) {
+        let x = new Date(req.body.expirey)
+        if (x instanceof Date && !isNaN(x)) body.expirey = req.body.expirey
+    }
+    if (req.body.role !== undefined && typeof req.body.role === 'number' ) body.role = req.body.role
+    if (req.body.user !== undefined && typeof req.body.user === 'string') body.user = req.body.user
+
+    // Mongoose Doc: https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+    return dbconn.model.findOneAndUpdate(filter, body, options)
+        .then(result => {
+            return result
+        }).catch(err => {
+            log.error(err)
+            return err
+        })
 }
 
 

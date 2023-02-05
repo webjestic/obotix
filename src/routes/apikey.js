@@ -38,6 +38,18 @@ export default function (router) {
                 else res.status(500).json(err)
             })
     })
+
+
+    // eslint-disable-next-line no-unused-vars
+    router.put('/apikey', rateLimit, apikey, async (req, res) => {
+        configs.putApiKey(req, res)
+            .then(response => {
+                res.status(200).json(response)
+            }).catch(err => {
+                if (err.status !== undefined) res.status(err.status).json(err)
+                else res.status(500).json(err)
+            })
+    })
     
     return router
 }
