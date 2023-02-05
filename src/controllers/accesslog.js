@@ -4,6 +4,7 @@
 
 import dbconn from '../models/accesslog.js'
 import logger from '../app/logger.js'
+import getPaginate from '../app/fn/paginate.js'
 const log = logger.getLogger('ctrl:accesslog')
 
 
@@ -21,20 +22,6 @@ function getQuery(req) {
     if (req.query.apikeyuser !== undefined) query.apikeyuser = req.query.apikeyuser
     if (req.query.access !== undefined) query.access = req.query.access
     return query
-}
-
-function getPaginate(req) {
-    let paginate = {}
-
-    let limit = Number(req.query.limit) || 100
-    let page = Number(req.query.page) || 1
-
-    if (limit <= 0) limit = 100
-    if (page <= 0) page = 1
-
-    paginate.limit = limit
-    paginate.page = (page - 1) * limit
-    return paginate
 }
 
 

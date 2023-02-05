@@ -2,7 +2,7 @@
  * 
  */
 
-import configs from '../controllers/config.js'
+import configs from '../controllers/apikey.js'
 import apikey from '../middleware/apikey.js'
 import rateLimit from '../middleware/rateLimit.js'
 
@@ -17,8 +17,8 @@ import rateLimit from '../middleware/rateLimit.js'
 export default function (router) {
 
     // eslint-disable-next-line no-unused-vars
-    router.get('/config', rateLimit, apikey, async (req, res) => {
-        configs.getConfigs(req, res)
+    router.get('/apikey', rateLimit, apikey, async (req, res) => {
+        configs.getApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)
             }).catch(err => {
@@ -29,8 +29,8 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.put('/config', rateLimit, apikey, async (req, res) => {
-        configs.putConfigs(req, res)
+    router.put('/apikey', rateLimit, apikey, async (req, res) => {
+        configs.putApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)
             }).catch(err => {

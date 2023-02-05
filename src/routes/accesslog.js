@@ -17,7 +17,7 @@ import rateLimit from '../middleware/rateLimit.js'
 export default function (router) {
 
     // eslint-disable-next-line no-unused-vars
-    router.get('/accesslogs', apikey, rateLimit, async (req, res) => {
+    router.get('/accesslogs', rateLimit, apikey, async (req, res) => {
         accesslog.getAccesslogs(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -29,7 +29,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.delete('/accesslogs', apikey, rateLimit, async (req, res) => {
+    router.delete('/accesslogs', rateLimit, apikey, async (req, res) => {
         accesslog.deleteAccessLogs(req, res)
             .then(response => {
                 res.status(200).json(response)

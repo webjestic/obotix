@@ -6,14 +6,6 @@ import config from './config.js'
 import dbconn from '../models/dblog.js'
 
 
-
-function levelAllowed( logLevel) {
-    const levels = Object.freeze({ 'trace': 0, 'debug': 1, 'info': 2, 'warn': 3, 'error': 4, 'fatal': 5 })
-    // const conf = config.getConfig()
-    return levels[logLevel] >= levels[config.getConfig().logger.logToDb.level] 
-}
-
-
 class DBLog {
 
     log = logger.getLogger('app:dblog')
@@ -38,11 +30,21 @@ class DBLog {
     }
 
 
+    levelAllowed( logLevel) {
+        try {
+            const levels = Object.freeze({ 'trace': 0, 'debug': 1, 'info': 2, 'warn': 3, 'error': 4, 'fatal': 5 })
+            return levels[logLevel] >= levels[config.getConfig().logger.logToDb.level] 
+        } catch (ex) {
+            console.log(ex)
+        }
+    }
+
+
     logToDb(logEntry) {
         try {
             if (dblog.connection.readyState === 1) {
                 if (config.getConfig().logger.logToDb.enabled === true) {
-                    if (levelAllowed(logEntry.level)) {
+                    if (this.levelAllowed(logEntry.level)) {
     
                         const entry = { 
                             'level': logEntry.level,
