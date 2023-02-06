@@ -9,6 +9,13 @@
       "accesslog": {
         "enabled": true
       }
+    },
+    "apiRoles": {
+      "0": "guest",
+      "1": "member",
+      "2": "manager",
+      "4": "executive",
+      "8": "admin"
     }
   },
   "logish": {
