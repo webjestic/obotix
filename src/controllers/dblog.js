@@ -2,10 +2,10 @@
  * 
  */
 
-import dbconn from '../models/accesslog.js'
+import dbconn from '../models/dblog.js'
 import logger from '../app/logger.js'
 import getPaginate from '../app/fn/paginate.js'
-const log = logger.getLogger('ctrl:accesslog')
+const log = logger.getLogger('ctrl:dblog')
 
 
 function getQuery(req) {
@@ -16,28 +16,28 @@ function getQuery(req) {
             '$lte': new Date(req.query.endDate)
         }
     }
-    if (req.query.ip !== undefined) query.ip = { '$regex': req.query.ip, '$options': 'i' } // ip contains
-    if (req.query.svr !== undefined) query.svr = { '$regex': req.query.svr, '$options': 'i' } 
-    if (req.query.uid !== undefined) query.uid = req.query.uid
-    if (req.query.apikeyuser !== undefined) query.apikeyuser = req.query.apikeyuser
-    if (req.query.access !== undefined) query.access = req.query.access
+    if (req.query.namespace !== undefined) query.namespace = { '$regex': req.query.namespace, '$options': 'i' }
+    if (req.query.server !== undefined) query.server = { '$regex': req.query.server, '$options': 'i' } 
+    if (req.query.level !== undefined) query.level = req.query.level
+    if (req.query.entry !== undefined) query.entry = { '$regex': req.query.entry, '$options': 'i' } 
+    
     return query
 }
 
 
 // eslint-disable-next-line no-unused-vars
-async function getAccesslogs(req, res) {
+async function getLogs(req, res) {
 
-    const accesslogs = dbconn()
+    const dblog = dbconn()
 
-    const count = await accesslogs.model.count()
+    const count = await dblog.model.count()
     log.debug(`count=${count}`)
     log.debug(req.query)
 
     let query = getQuery(req)
     let paginate = getPaginate(req)
 
-    return accesslogs.model.find(query).limit(paginate.limit).skip(paginate.page).exec()
+    return dblog.model.find(query).limit(paginate.limit).skip(paginate.page).exec()
         .then(doc => {
             var result = {}
             
@@ -47,8 +47,8 @@ async function getAccesslogs(req, res) {
                     result.entries = []
                     for (const [key, entry] of Object.entries(doc)) {
                         try {
-                            var logentry = `${new Date(entry.timestamp).toISOString()} ${entry.ip} ${entry.uid}`
-                            logentry = logentry + ` ${entry.access} ${entry.svr} ${entry.apikeyuser}`
+                            var logentry = `[${new Date(entry.timestamp).toISOString()} ${entry.server}]`
+                            logentry = logentry + ` ${entry.level.toUpperCase()} ${entry.namespace} ${entry.entry}`
                             result.entries.push(logentry)
                             result.count = Number(key) + 1
                         } catch(ex) {
@@ -69,9 +69,9 @@ async function getAccesslogs(req, res) {
 
 
 // eslint-disable-next-line no-unused-vars
-async function deleteAccessLogs(req, res) {
+async function deleteLogs(req, res) {
 
-    const accesslogs = dbconn()
+    const dblog = dbconn()
 
     log.debug('query', req.query)
     var query = getQuery(req)
@@ -88,7 +88,7 @@ async function deleteAccessLogs(req, res) {
     if (req.query.deleteall !== undefined && req.query.deleteall === 'true') 
         query = {}
         
-    return accesslogs.model.deleteMany(query).exec()
+    return dblog.model.deleteMany(query).exec()
         .then(response => {
             return response
         }).catch(err => {
@@ -99,6 +99,6 @@ async function deleteAccessLogs(req, res) {
 }
 
 export default {
-    getAccesslogs,
-    deleteAccessLogs
+    getLogs,
+    deleteLogs
 }

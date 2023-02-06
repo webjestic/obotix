@@ -9,6 +9,8 @@ import DbLog from './app/dblog.js'
 import Http from './app/http.js'
 import Sys from './app/sys.js'
 
+import Fn from './app/fn/index.js'
+
 import apikey from './middleware/apikey.js'
 import rateLimit from './middleware/rateLimit.js'
 
@@ -20,6 +22,7 @@ class Obotix {
     dblog = DbLog
     http = Http
     sys = Sys
+    fn = Fn
 
     log = undefined
 
