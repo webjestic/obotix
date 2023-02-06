@@ -1,5 +1,5 @@
 
-import paginate from './paginate'
+import paginate from './paginate.js'
 
 export default {
     paginate
