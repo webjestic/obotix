@@ -9,6 +9,13 @@
       "accesslog": {
         "enabled": true
       }
+    },
+    "roles": {
+      "0": "guest",
+      "1": "member",
+      "2": "moderator",
+      "4": "manager",
+      "8": "admin"
     }
   },
   "logish": {

@@ -11,8 +11,9 @@ import Sys from './app/sys.js'
 
 import Fn from './app/fn/index.js'
 
-import apikey from './middleware/apikey.js'
 import rateLimit from './middleware/rateLimit.js'
+import apikey from './middleware/apikey.js'
+import role from './middleware/role.js'
 
 
 class Obotix {
@@ -58,10 +59,12 @@ class Obotix {
 
     getMiddleware(middlewareName) {
         switch (middlewareName.toLowerCase()) {
-        case 'apikey':
-            return apikey
         case 'ratelimit':
             return rateLimit
+        case 'apikey':
+            return apikey
+        case 'role':
+            return role
         default :
             this.log.error(`addMiddleware Error: ${middlewareName}`)
             return false

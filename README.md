@@ -36,3 +36,57 @@ obotix.listen( () => {
     log.info(`Service is listening on port ${process.env.OAPI_PORT}.`)
 })
 ```
+
+## Rate Limit
+
+Rate limiter is added to specific routes that deal with heavy processing, such as DB or IO. </br>
+rateLimit is param middleware.
+```javascript
+
+import obotix from 'obotix'
+const rateLimit = obotix.getMiddleware('rateLimit')
+
+router.post('/', rateLimit, async (req, res) => {
+    // read write DB
+}
+```
+
+## ApiKey
+
+Auth is added to specific routes that require it. </br>
+auth is param middleware.
+```javascript
+
+import obotix from 'obotix'
+const rateLimit = obotix.getMiddleware('rateLimit')
+const rateLimit = obotix.getMiddleware('apiKey')
+
+router.put('/', rateLimit, apikey, async (req, res) => {
+
+    console.log( req.apiuser.user )
+    console.log( req.apiuser.apikey )
+    console.log( req.apiuser.role )
+    console.log( req.apiuser.expiery )
+
+    // execute auth required code
+    // read write DB
+}
+```
+
+## Roles
+Roles is added to specific routes that require it. </br>
+Roles is param middleware.
+```javascript
+
+import obotix from 'obotix'
+const rateLimit = obotix.getMiddleware('rateLimit')
+const apikey = obotix.getMiddleware('apiKey')
+const role = obotix.getMiddleware('role')
+const roles = obotix.getConfig().roles
+
+router.get('/', rateLimit, apikey, role(roles.manager), async (req, res) => {
+    // execute role privileged colde
+    // execute auth required code
+    // read write DB
+}
+```

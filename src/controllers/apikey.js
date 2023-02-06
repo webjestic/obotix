@@ -42,6 +42,7 @@ async function verifyApiKey(req, res) {
         }
     }
 
+    if (allowAccess) req.apiuser = apikeys
     return allowAccess
 }
 
