@@ -13,7 +13,7 @@ import Fn from './app/fn/index.js'
 
 import rateLimit from './middleware/rateLimit.js'
 import apikey from './middleware/apikey.js'
-import role from './middleware/role'
+import role from './middleware/role.js'
 
 
 class Obotix {
