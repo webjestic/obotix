@@ -10,11 +10,11 @@
         "enabled": true
       }
     },
-    "apiRoles": {
+    "roles": {
       "0": "guest",
       "1": "member",
-      "2": "manager",
-      "4": "executive",
+      "2": "moderator",
+      "4": "manager",
       "8": "admin"
     }
   },
