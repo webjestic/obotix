@@ -43,14 +43,16 @@ async function getAccesslogs(req, res) {
             
             if (req.query.oneline !== undefined) {
                 if (req.query.oneline === 'true') {
-                    result.count = 0
+                    result.dbtotal = count
+                    result.pagelimit = `Page ${req.query.page} | Limit ${paginate.limit}`
+                    result.returned = 0
                     result.entries = []
                     for (const [key, entry] of Object.entries(doc)) {
                         try {
                             var logentry = `${new Date(entry.timestamp).toISOString()} ${entry.ip} ${entry.uid}`
                             logentry = logentry + ` ${entry.access} ${entry.svr} ${entry.apikeyuser}`
                             result.entries.push(logentry)
-                            result.count = Number(key) + 1
+                            result.returned = Number(key) + 1
                         } catch(ex) {
                             log.error(ex)
                         }
