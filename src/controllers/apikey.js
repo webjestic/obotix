@@ -62,7 +62,7 @@ function getQuery(req) {
             query.expirey = { '$lte': new Date(Date.now()) }   
         
     }
-    if (req.query.role !== undefined) query.role = req.query.role
+    if (req.query.role !== undefined) query.role = { '$eq': Number(req.query.role) }
 
     return query
 }
@@ -79,7 +79,7 @@ function scrubBody(req) {
         if (req.body.enabled === true) body.enabled = true
         if (req.body.enabled === false) body.enabled = false
     }
-    if (req.body.role !== undefined) body.level = req.body.role
+    if (req.body.role !== undefined) body.role = req.body.role
 
     if (body.apikey === undefined ||
         body.user === undefined ||
@@ -128,7 +128,7 @@ async function postApiKey(req, res) {
     // using await instead of chaining multiple then statements
     // await is NON-BLOCKING for the main interpreter
     const existingDoc = await getApiKey({ query: { apikey: body.apikey, user: body.user }}, {})
-    if (existingDoc !== undefined) {
+    if (existingDoc !== undefined && Object.keys(existingDoc).length > 0) {
         return new Promise((resolve, reject) => {
             reject({ status: 400, message: 'Document already exists.', doc: existingDoc})
         })
