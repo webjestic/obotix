@@ -84,6 +84,7 @@ function scrubBody(req) {
     if (body.apikey === undefined ||
         body.user === undefined ||
         body.expirey === undefined ||
+        body.role === undefined ||
         body.enabled === undefined)
         body = false
 

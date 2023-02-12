@@ -5,7 +5,9 @@
  */
 
 import db from '../app/db.js'
+import logger from '../app/logger.js'
 
+const log = logger.getLogger('model:accesslog')
 var dbconn = undefined
 
 export default function () {
@@ -21,7 +23,7 @@ export default function () {
             dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
             dbconn.model = dbconn.connection.model('Log', dbconn.schema)
         } catch(ex) {
-            this.log.error(ex)
+            log.error(ex)
         }
     }
         
