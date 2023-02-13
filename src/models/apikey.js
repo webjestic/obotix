@@ -5,8 +5,10 @@
  */
 
 import db from '../app/db.js'
+import logger from '../app/logger.js'
 
 var dbconn = undefined
+const log = logger.getLogger('app:dbversion')
 
 export default function () {
     if (dbconn === undefined) {
@@ -21,7 +23,8 @@ export default function () {
             dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
             dbconn.model = dbconn.connection.model('Apikey', dbconn.schema)
         } catch(ex) {
-            this.log.error(ex)
+            dbconn = undefined
+            log.error(ex)
         }
     }
         
