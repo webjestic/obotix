@@ -90,6 +90,7 @@ function getQuery(req) {
         
     }
     if (req.query.role !== undefined) query.role = { '$eq': Number(req.query.role) }
+    if (req.query._id !== undefined) query._id = req.query._id
 
     return query
 }
