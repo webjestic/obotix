@@ -6,15 +6,37 @@ import logger from '../app/logger.js'
 import dbcollection from '../models/apikey.js'
 import getPaginate from '../app/fn/paginate.js'
 
+import bcrypt from 'bcrypt'
+
 const log = logger.getLogger('ctrl:apikey')
+const saltRounds = 8
+
+// SALT ROUND - TABLE
+// rounds=8 : ~40 hashes/sec
+// rounds=9 : ~20 hashes/sec
+// rounds=10: ~10 hashes/sec
+// rounds=11: ~5  hashes/sec
+// rounds=12: 2-3 hashes/sec
+// rounds=13: ~1 sec/hash
+// rounds=14: ~1.5 sec/hash
+// rounds=15: ~3 sec/hash
+// rounds=25: ~1 hour/hash
+// rounds=31: 2-3 days/hash
 
 
-/**
- * 
- * @param {Object} req 
- * @param {Object} res 
- * @returns {Object}
- */
+
+async function createHashKey(plainTextApiKey) {
+    const salt = bcrypt.genSaltSync(saltRounds)
+    const hash = bcrypt.hashSync(plainTextApiKey, salt)
+    return hash
+}
+
+async function checkHashKey(plainTextApiKey, hashKey) {
+    const result = bcrypt.compareSync(plainTextApiKey, hashKey)
+    return result
+}
+
+
 // eslint-disable-next-line no-unused-vars
 async function verifyApiKey(req, res) {
     const dbconn = dbcollection()
@@ -32,17 +54,23 @@ async function verifyApiKey(req, res) {
         log.debug(apikeys)
 
         try {
-            if (apikeys.user === apiuser && apikeys.apikey === apikey && apikeys.enabled == true)
-                allowAccess = true
+            const rightnow = new Date()
+            const expireyDate = new Date(apikeys.expirey)
+            if (apikeys.user === apiuser && apikeys.enabled == true) {
+                if (expireyDate.getTime() > rightnow.getTime()) {
+                    if (checkHashKey(apikey, apikeys.apikey))
+                        allowAccess = true
+                }
+            }
 
-            if (apikeys.expirey <= Date.now()) 
-                allowAccess = false
         } catch(ex) {
             allowAccess = false
         }
     }
 
-    if (allowAccess) req.apiuser = apikeys
+    if (allowAccess) 
+        req.apiuser = apikeys
+
     return allowAccess
 }
 
@@ -55,7 +83,6 @@ function getQuery(req) {
         if (req.query.enabled === 'true') query.enabled = true
         if (req.query.enabled === 'false') query.enabled = false
     }
-    if (req.query.apikey !== undefined)  query.apikey = req.query.apikey 
     if (req.query.user !== undefined) query.user = req.query.user
     if (req.query.isexpired !== undefined) {
         if (req.query.isexpired === 'true') 
@@ -68,11 +95,11 @@ function getQuery(req) {
 }
 
 
-function scrubBody(req) {
+async function scrubBody(req) {
     var body = {}
     log.debug(req.body)
 
-    if (req.body.apikey !== undefined) body.apikey = req.body.apikey
+    if (req.body.apikey !== undefined) body.apikey = await createHashKey(req.body.apikey)
     if (req.body.user !== undefined) body.user = req.body.user 
     if (req.body.expirey !== undefined) body.expirey = req.body.expirey
     if (req.body.enabled !== undefined) {
@@ -100,7 +127,8 @@ async function getApiKey(req, res) {
     let paginate = getPaginate(req)
 
     const projection = { 
-        _id: 0, 
+        _id: 1, 
+        apikey: 0,
         __v: 0
     }
 
@@ -118,7 +146,7 @@ async function getApiKey(req, res) {
 async function postApiKey(req, res) {
     const dbconn = dbcollection()
 
-    const body = scrubBody(req)
+    const body = await scrubBody(req)
 
     if (body === false) {
         return new Promise((resolve, reject) => {
@@ -128,7 +156,7 @@ async function postApiKey(req, res) {
 
     // using await instead of chaining multiple then statements
     // await is NON-BLOCKING for the main interpreter
-    const existingDoc = await getApiKey({ query: { apikey: body.apikey, user: body.user }}, {})
+    const existingDoc = await getApiKey({ query: { user: body.user }}, {})
     if (existingDoc !== undefined && Object.keys(existingDoc).length > 0) {
         return new Promise((resolve, reject) => {
             reject({ status: 400, message: 'Document already exists.', doc: existingDoc})
@@ -136,6 +164,8 @@ async function postApiKey(req, res) {
     } else {
         return dbconn.model.create(body)
             .then(doc => {
+                var newdoc = doc._doc
+                delete newdoc.apikey
                 return doc
             }).catch(err => {
                 log.errpr(err)
@@ -151,18 +181,18 @@ async function postApiKey(req, res) {
 async function putApiKey(req, res) {
     const dbconn = dbcollection()
 
-    if (req.body.apikey !== undefined && typeof req.body.apikey === 'string')
-        var filter = { apikey: req.body.apikey }
+    if (req.body._id !== undefined && typeof req.body._id === 'string')
+        var filter = { _id: req.body._id }
     else {
         return new Promise((resolve, reject) => {
-            reject({ status: 400, message: 'apikey required for update.'})
+            reject({ status: 400, message: '_id required for update.'})
         })
     }
 
     // options.projection will return only the field updates included in req.body plus the _id and filter
     const options = { 
         projection: {
-            _id: 0,
+            apikey: 0,
             __v: 0
         },
         upsert: true,
@@ -176,7 +206,7 @@ async function putApiKey(req, res) {
         if (x instanceof Date && !isNaN(x)) body.expirey = req.body.expirey
     }
     if (req.body.role !== undefined && typeof req.body.role === 'number' ) body.role = req.body.role
-    if (req.body.user !== undefined && typeof req.body.user === 'string') body.user = req.body.user
+    // if (req.body.user !== undefined && typeof req.body.user === 'string') body.user = req.body.user
 
     // Mongoose Doc: https://mongoosejs.com/docs/tutorials/findoneandupdate.html
     return dbconn.model.findOneAndUpdate(filter, body, options)
