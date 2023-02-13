@@ -27,3 +27,11 @@ export default function () {
         
     return dbconn
 }
+
+// userSchema.methods.generateAuthToken = function() { 
+//     const token = jwt.sign({ _id: this._id, role: this.role }, process.env.OAPI_JWT_KEY)
+//     log.debug('_id:', this._id)
+//     log.debug('role:', this.role)
+//     log.debug('jwt:', token)
+//     return token
+// }
