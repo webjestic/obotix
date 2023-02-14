@@ -13,9 +13,7 @@ export default function () {
         dbconn = {
             connection: undefined,
             schema: undefined,
-            model: undefined,
-            data: undefined,
-            onChange: undefined,
+            model: undefined
         }
 
         // Example Document

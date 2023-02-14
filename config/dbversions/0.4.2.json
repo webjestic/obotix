@@ -9,15 +9,14 @@
                 "admin": {"$numberInt":"8"}
             }
         },
-        "apikeys" : {
-            "apikey": "$2b$08$pto/QeA3r3xVg8WpHOuIA.ctqg3zG7Cz.v8b7JPts4pZz3vg2IX22",
-            "user": "webjestic",
-            "expirey": {"$date":{"$numberLong":"1893456000743"}},
-            "enabled": true,
-            "role": {"$numberInt":"8"}
-        }
-    },
-    "OAPI_DB_APP": [
-
-    ]
+        "apikeys" : [
+            {
+                "apikey": "$2b$08$pto/QeA3r3xVg8WpHOuIA.ctqg3zG7Cz.v8b7JPts4pZz3vg2IX22",
+                "user": "webjestic",
+                "expirey": {"$date":{"$numberLong":"1893456000743"}},
+                "enabled": true,
+                "role": {"$numberInt":"8"}
+            }
+        ]
+    }
 }
