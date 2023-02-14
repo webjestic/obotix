@@ -26,7 +26,6 @@ class Obotix {
     sys = Sys
     fn = Fn
     dbversion = undefined
-    dbVersionUpdater = DBVersion.DBVersionUpdater
 
     log = undefined
 
