@@ -8,7 +8,7 @@ import db from '../app/db.js'
 import logger from '../app/logger.js'
 
 var dbconn = undefined
-const log = logger.getLogger('app:dbversion')
+const log = logger.getLogger('model:apikey')
 
 export default function () {
     if (dbconn === undefined) {

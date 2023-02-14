@@ -5,7 +5,7 @@
 import db from '../app/db.js'
 import logger from '../app/logger.js'
 
-const log = logger.getLogger('model:accesslog')
+const log = logger.getLogger('model:config')
 var dbconn = undefined
 
 export default function () {
