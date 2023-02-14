@@ -8,7 +8,7 @@ import Conifg from './app/config.js'
 import DbLog from './app/dblog.js'
 import Http from './app/http.js'
 import Sys from './app/sys.js'
-import Dbversion from './app/dbversion.js'
+import DBVersion from './app/dbversion.js'
 
 import Fn from './app/fn/index.js'
 
@@ -25,7 +25,8 @@ class Obotix {
     http = Http
     sys = Sys
     fn = Fn
-    dbversion = Dbversion
+    dbversion = undefined
+    dbVersionUpdater = DBVersion.DBVersionUpdater
 
     log = undefined
 
@@ -39,7 +40,8 @@ class Obotix {
         this.log.info(`Initializing app in a ${process.env.NODE_ENV.toUpperCase()} environment.`)
 
         await this.db.init()
-        await this.dbversion.init()
+        this.dbversion = new DBVersion.DBNodeUpdater()
+        await this.dbversion.update('OAPI_DB_NODE')
         await this.config.init()
         await this.dblog.init()
         this.sys.init()
