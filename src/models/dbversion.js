@@ -30,22 +30,30 @@ export default function () {
             dbconn.connection = db.getConnFromConnStr(process.env.OAPI_DB_NODE) 
             dbconn.schema = new db.mongoose.Schema({ 
                 // any: db.mongoose.Schema.Types.Mixed 
+                verid : {
+                    type: String,
+                    required: true,
+                    minlength: 10,   // MyTN-Node0.2.5
+                    maxlength: 40, 
+                    unique: true
+                },
                 db: {
                     type: String,
                     required: true,
                     minlength: 4,   // MyTN
                     maxlength: 20, 
-                    unique: true
+                    unique: false
                 },
                 version: {
                     type: String,
                     required: true,
                     minlength: 5, // 0.0.0 to 000.000.000.000
                     maxlength: 16,
-                    unique: true
+                    unique: false
                 },
                 state: {
                     type: String,
+                    enum: ['inProgress', 'Complete', 'inError'],
                     required: true,
                     minlength: 6, // inError
                     maxlength: 20 

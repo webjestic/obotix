@@ -118,6 +118,7 @@ class DBVersionUpdater {
         this.versionModel = dbversionModel()
 
         const newdoc = {
+            verid: `${this.dbName}_${this.appVersion}`,
             db: this.dbName,
             version: this.appVersion,
             state: 'inProgress',

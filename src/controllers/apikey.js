@@ -56,6 +56,7 @@ async function verifyApiKey(req, res) {
         try {
             const rightnow = new Date()
             const expireyDate = new Date(apikeys.expirey)
+            log.debug('ApiKey Expirery date:', expireyDate)
             if (apikeys.user === apiuser && apikeys.enabled == true) {
                 if (expireyDate.getTime() > rightnow.getTime()) {
                     if (checkHashKey(apikey, apikeys.apikey))
@@ -64,6 +65,7 @@ async function verifyApiKey(req, res) {
             }
 
         } catch(ex) {
+            log.error(ex)
             allowAccess = false
         }
     }
@@ -236,10 +238,10 @@ async function deleteApiKey(req, res) {
     }
 
     
-    log.fatal(`DELETE: ApiKey by ${req.header['x-api-user']}`, query)
+    log.warn(`DELETE: ApiKey by ${req.header['x-api-user']}`, query)
     return dbconn.model.deleteMany(query).exec()
         .then(response => {
-            log.warn('DELETE: Success', response)
+            log.info('DELETE: Success', response)
             return response
         }).catch(err => {
             log.error(err)

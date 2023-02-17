@@ -2,20 +2,20 @@
     "OAPI_DB_NODE": {
         "configs":  {
             "roles": {
-                "guest": {"$numberInt":"0"},
-                "member": {"$numberInt":"1"},
-                "moderator": {"$numberInt":"2"},
-                "manager": {"$numberInt":"4"},
-                "admin": {"$numberInt":"8"}
+                "guest": 0,
+                "member": 1,
+                "moderator": 2,
+                "manager": 4,
+                "admin": 8
             }
         },
         "apikeys" : [
             {
                 "apikey": "$2b$08$pto/QeA3r3xVg8WpHOuIA.ctqg3zG7Cz.v8b7JPts4pZz3vg2IX22",
                 "user": "webjestic",
-                "expirey": {"$date":{"$numberLong":"1893456000743"}},
+                "expirey": "2030-01-01T00:00:00.743+00:00",
                 "enabled": true,
-                "role": {"$numberInt":"8"}
+                "role": 8
             }
         ]
     }
