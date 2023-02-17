@@ -5,6 +5,8 @@
 import configs from '../controllers/apikey.js'
 import apikey from '../middleware/apikey.js'
 import rateLimit from '../middleware/rateLimit.js'
+import role from '../middleware/role.js'
+import config from '../app/config.js'
 
 /**
  * Function accepts a router (ideally a freshly created router) and adds REST methods.
@@ -16,8 +18,10 @@ import rateLimit from '../middleware/rateLimit.js'
  */
 export default function (router) {
 
+    const roles = config.getConfig().roles
+
     // eslint-disable-next-line no-unused-vars
-    router.get('/apikey', rateLimit, apikey, async (req, res) => {
+    router.get('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
         configs.getApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -29,7 +33,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.post('/apikey', rateLimit, apikey, async (req, res) => {
+    router.post('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
         configs.postApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -41,7 +45,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.put('/apikey', rateLimit, apikey, async (req, res) => {
+    router.put('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
         configs.putApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -53,7 +57,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.delete('/apikey', rateLimit, apikey, async (req, res) => {
+    router.delete('/apikey', rateLimit, apikey, role(roles.admin), async (req, res) => {
         configs.deleteApiKey(req, res)
             .then(response => {
                 res.status(200).json(response)

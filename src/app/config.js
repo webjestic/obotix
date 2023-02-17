@@ -70,11 +70,11 @@ class Config extends EventEmitter {
             const doc = await this.dbconn.model.find({}).exec()
             this.dbconn.data = doc[0]
             if (this.dbconn.data === undefined) {
-                this.saveFirstConfig()
+                // this.saveFirstConfig()
                 this.dbconn.data = this.defaultConfig
             }
             this.log.info(`Configuration loaded from ${this.dbconn.connection.config.db}.configs.`)
-            this.log.debug('config.getConfig() returns', this.dbconn.data)
+            // this.log.debug('config.getConfig() returns', this.dbconn.data)
             logger.setLevel(this.dbconn.data.logger.level) // updating Logger, because it is not a subscriber
         } catch (ex) {
             this.log.error(ex)
@@ -82,16 +82,17 @@ class Config extends EventEmitter {
     }
 
 
-    async saveFirstConfig() {
-        try {
-            Config.create(this.defaultConfig, (err) => {
-                if (err) return console.log(err)
-                // saved!
-            })
-        } catch(ex) {
-            this.log.error(ex)
-        }
-    }
+    // TODO: Flagged for deleteion; this is not a long term code comment.
+    // async saveFirstConfig() {
+    //     try {
+    //         Config.create(this.defaultConfig, (err) => {
+    //             if (err) return console.log(err)
+    //             // saved!
+    //         })
+    //     } catch(ex) {
+    //         this.log.error(ex)
+    //     }
+    // }
 
 
     getConfig() {

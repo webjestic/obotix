@@ -11,11 +11,11 @@
       }
     },
     "roles": {
-      "0": "guest",
-      "1": "member",
-      "2": "moderator",
-      "4": "manager",
-      "8": "admin"
+      "guest": 0,
+      "member": 1,
+      "moderator": 2,
+      "manager": 4,
+      "admin": 8
     }
   },
   "logish": {

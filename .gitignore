@@ -7,6 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 zdoc/
 __temp.md
+__temp.js
 
 # Mac OS
 .DS_Store

@@ -21,6 +21,7 @@ export default function () {
             dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
             dbconn.model = dbconn.connection.model('Accesslog', dbconn.schema)
         } catch(ex) {
+            dbconn = undefined
             log.error(ex)
         }
     }
