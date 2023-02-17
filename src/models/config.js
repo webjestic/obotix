@@ -54,7 +54,7 @@ export default function () {
                         }
                     }
                 },
-                role: {
+                roles: {
                     guest: {
                         type: Number,
                         required: true,

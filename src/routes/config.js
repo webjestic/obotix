@@ -5,6 +5,8 @@
 import configs from '../controllers/config.js'
 import apikey from '../middleware/apikey.js'
 import rateLimit from '../middleware/rateLimit.js'
+import role from '../middleware/role.js'
+import config from '../app/config.js'
 
 /**
  * Function accepts a router (ideally a freshly created router) and adds REST methods.
@@ -16,8 +18,10 @@ import rateLimit from '../middleware/rateLimit.js'
  */
 export default function (router) {
 
+    const roles = config.getConfig().roles
+
     // eslint-disable-next-line no-unused-vars
-    router.get('/config', rateLimit, apikey, async (req, res) => {
+    router.get('/config', rateLimit, apikey, role(roles.manager), async (req, res) => {
         configs.getConfigs(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -29,7 +33,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.put('/config', rateLimit, apikey, async (req, res) => {
+    router.put('/config', rateLimit, apikey, role(roles.admin), async (req, res) => {
         configs.putConfigs(req, res)
             .then(response => {
                 res.status(200).json(response)
