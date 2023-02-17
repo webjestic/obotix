@@ -44,7 +44,7 @@ async function getAccesslogs(req, res) {
             if (req.query.oneline !== undefined) {
                 if (req.query.oneline === 'true') {
                     result.dbtotal = count
-                    result.pagelimit = `Page ${req.query.page} | Limit ${paginate.limit}`
+                    result.pagelimit = `Page ${paginate.pageDisplay} | Limit ${paginate.limit}`
                     result.returned = 0
                     result.entries = []
                     for (const [key, entry] of Object.entries(doc)) {

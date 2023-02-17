@@ -224,14 +224,25 @@ class DBNodeUpdater extends DBVersionUpdater {
         // Should always be only one document
         let configDoc = await this.configs.model.find({}).exec()
         configDoc = configDoc[0]
-        this.log.debug(`configs.id : ${configDoc.id}`)
 
-        this.log.debug(this.versionData.configs)
-        try {
-            var results = await this.configs.model.findByIdAndUpdate( configDoc.id, this.versionData.configs)
-            this.log.debug(results)
-        } catch(ex) {
-            this.log.error('updateConfigs() ', ex)
+        var results = undefined
+        if (configDoc !== undefined) {
+            this.log.debug(`configs.id : ${configDoc.id}`)
+            this.log.debug(this.versionData.configs)
+            try {
+                results = await this.configs.model.findByIdAndUpdate( configDoc.id, this.versionData.configs)
+                this.log.debug(results)
+            } catch(ex) {
+                this.log.error('updateConfigs() ', ex)
+            }
+        } else {
+            this.log.info(`Creating new ${this.dbName}.configs`)
+            try {
+                results = await this.configs.model.create(this.versionData.configs)
+                this.log.debug(results)
+            } catch (ex) {
+                this.log.error('updateConfigs() ', ex)
+            }
         }
     }
 

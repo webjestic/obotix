@@ -1,5 +1,15 @@
 {
     "OAPI_DB_NODE": {
+        "logger": {
+            "level": "trace",
+            "logToDb": {
+              "enabled": true,
+              "level": "warn"
+            },
+            "accesslog": {
+              "enabled": true
+            }
+        },
         "configs":  {
             "roles": {
                 "guest": 0,

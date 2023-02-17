@@ -9,9 +9,10 @@ export default function (req) {
     if (limit <= 0) limit = 100
     if (page <= 0) page = 1
 
-    if (limit > 5000) limit = 5000
+    if (limit > 1000) limit = 1000
 
     paginate.limit = limit
     paginate.page = (page - 1) * limit
+    paginate.pageDisplay = page
     return paginate
 }
