@@ -20,7 +20,12 @@ export default function () {
 
         try {
             dbconn.connection = db.getConnFromConnStr(process.env.OAPI_DB_NODE) 
-            dbconn.schema = new db.mongoose.Schema({ any: db.mongoose.Schema.Types.Mixed }, { strict: false })
+            dbconn.schema = new db.mongoose.Schema({ 
+                any: db.mongoose.Schema.Types.Mixed 
+            }, 
+            { 
+                strict: false 
+            })
             dbconn.model = dbconn.connection.model('Config', dbconn.schema)
         } catch(ex) {
             dbconn = undefined

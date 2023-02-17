@@ -50,7 +50,9 @@ export default function () {
                     required: true
                 }
             }, 
-            { strict: false })
+            { 
+                strict: true 
+            })
             dbconn.model = dbconn.connection.model('Apikey', dbconn.schema)
         } catch(ex) {
             dbconn = undefined
