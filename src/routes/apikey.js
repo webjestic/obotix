@@ -2,7 +2,7 @@
  * 
  */
 
-import configs from '../controllers/apikey.js'
+import ApiKeyCtrl from '../controllers/apikey.js'
 import apikey from '../middleware/apikey.js'
 import rateLimit from '../middleware/rateLimit.js'
 import role from '../middleware/role.js'
@@ -19,7 +19,52 @@ import config from '../app/config.js'
 export default function (router) {
 
     const roles = config.getConfig().roles
+    const apiKeyCtrl = ApiKeyCtrl()
 
+    router.get('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
+        try {
+            const response = await apiKeyCtrl.get(req, res)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
+        } catch(ex) {
+            res.status(500).json(ex)
+        }
+    })
+
+
+    router.post('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
+        try {
+            const response = await apiKeyCtrl.post(req, res)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
+        } catch(ex) {
+            res.status(500).json(ex)
+        }
+    })
+
+
+    router.put('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
+        try {
+            const response = await apiKeyCtrl.put(req, res)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
+        } catch(ex) {
+            res.status(500).json(ex)
+        }
+    })
+
+
+    router.delete('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
+        try {
+            const response = await apiKeyCtrl.delete(req, res)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
+        } catch(ex) {
+            res.status(500).json(ex)
+        }
+    })
+
+    /*
     // eslint-disable-next-line no-unused-vars
     router.get('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
         configs.getApiKey(req, res)
@@ -66,6 +111,7 @@ export default function (router) {
                 else res.status(500).json(err)
             })
     })
+    */
     
     return router
 }

@@ -12,7 +12,8 @@ import config from '../app/config.js'
 export default function (router) {
 
     const roles = config.getConfig().roles
-    const users = new usersCtrl()
+    const users = usersCtrl()
+    
 
     router.get('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
@@ -36,7 +37,7 @@ export default function (router) {
     })
 
 
-    router.post('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
+    router.put('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.put(req, res)
             if (response.data !== undefined) res.status(response.status).json(response.data)
@@ -47,7 +48,7 @@ export default function (router) {
     })
 
 
-    router.post('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
+    router.delete('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.delete(req, res)
             if (response.data !== undefined) res.status(response.status).json(response.data)

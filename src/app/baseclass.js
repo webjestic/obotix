@@ -92,10 +92,6 @@ class ObotixController extends ObotixClass {
                 body[key] = value
                 // console.log(`${key}: ${value}`)
         }
-
-        // if (Object.keys(body).length <= 0) 
-        //     body = false
-
         return body
     }
 
@@ -122,7 +118,7 @@ class ObotixController extends ObotixClass {
 
 
     // eslint-disable-next-line no-unused-vars
-    async delete(req, res) {
+    delete(req, res) {
         this.log.debug(`get() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
         return this.queryFromRequest(req.query)
     }

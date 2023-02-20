@@ -1,12 +1,12 @@
 
 
 import dbcollection from '../models/users.js'
-import baasClass from '../app/baseclass.js'
+import baseClass from '../app/baseclass.js'
 
 import bcrypt from 'bcrypt'
 
 
-class UsersClass extends baasClass.ObotixController {
+class UsersClass extends baseClass.ObotixController {
     saltRounds = 8
 
     /**
@@ -18,6 +18,12 @@ class UsersClass extends baasClass.ObotixController {
     }
  
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async get (req, res) {
         var response = Object.assign(this.response)
         const query = super.get(req, res)
@@ -39,8 +45,14 @@ class UsersClass extends baasClass.ObotixController {
     }
 
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async post (req, res) {
-        var response = Object.create(this.response)
+        var response = Object.assign(this.response)
 
         // Filter the input and prepare the body
         const body = super.post(req, res)
@@ -53,7 +65,7 @@ class UsersClass extends baasClass.ObotixController {
         // Check if the document already exits
         try {
             let existingDoc = await this.get({ query: { user: body.user } }, {})
-            if (existingDoc !== undefined && Object.keys(existingDoc).length > 0) {
+            if (existingDoc.data !== undefined && Object.keys(existingDoc.data).length > 0) {
                 response.status = 400
                 response.message = 'Document already exists.'
                 response.data = existingDoc
@@ -81,8 +93,14 @@ class UsersClass extends baasClass.ObotixController {
     }
 
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async put (req, res) {
-        var response = Object.create(this.response)
+        var response = Object.assign(this.response)
         const body = super.put(req, res)
 
         if (body._id !== undefined && typeof body._id === 'string')
@@ -112,8 +130,14 @@ class UsersClass extends baasClass.ObotixController {
     }
 
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async delete (req, res) {
-        var response = Object.create(this.response)
+        var response = Object.assign(this.response)
         const query = super.delete(req, res)
 
         if ((Object.keys(query).length === 0)) {
@@ -134,5 +158,9 @@ class UsersClass extends baasClass.ObotixController {
 }
 
 
-
-export default UsersClass
+var usersClass = undefined
+export default function () {
+    if (usersClass === undefined) usersClass = new UsersClass
+    return usersClass
+}
+// export default UsersClass

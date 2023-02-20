@@ -4,7 +4,7 @@
  * Responsible for handling all HTTP Status 404 - Not Found
  */
 
-import apiKeyCtrl from '../controllers/apikey.js'
+import ApiKeyCtrl from '../controllers/apikey.js'
 
 
 /**
@@ -13,7 +13,8 @@ import apiKeyCtrl from '../controllers/apikey.js'
  * @param {Object} res 
  * @param {function} next 
  */
-export default async function (req, res, next){
+export default async function (req, res, next) {
+    const apiKeyCtrl = ApiKeyCtrl()
     if (await apiKeyCtrl.verifyApiKey(req, res) === true)
         next()
     else

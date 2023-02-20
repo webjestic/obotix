@@ -7,8 +7,7 @@ const log = logger.getLogger('mw:role')
 
 export default function(role)  {
     return (req, res, next) => {
-        log.debug ('req.apiuser.role', req.apiuser.role)
-        log.debug ('required role', role)
+        log.debug (`req.apiuser.role ${req.apiuser.role} and requires ${role}`)
         
         if (req.apiuser.role === undefined)
             return res.status(403).json( { message: 'Forbidden: Undefined role.' } )
