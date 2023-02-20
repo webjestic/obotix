@@ -20,7 +20,8 @@ export default function (err, req, res, next){
     log.error(err.message, { stack: err.stack })
     log.debug(`HTTP Status Coee 500 encountered for ${req.method} ${req.path}`)
     const response = {
-        'message': `HTTP Status Code 500 - Internal Error encountered on: ${req.method} ${req.path}`,
+        'status' : 500,
+        'message': `Internal Error encountered at: ${req.method} ${req.path}`,
         'error' : err.message
     }
     stats.incInternalErrors()

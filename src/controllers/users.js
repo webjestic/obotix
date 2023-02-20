@@ -89,11 +89,21 @@ class UsersClass extends baseClass.ObotixController {
         }
 
         // Encrypt password for storage
-        body.password = this.createHashKey(body.password)
+        // Password Requirements
+        // - Minimum 8 characters
+        // - Maximum 32 characters
+        // - At least 1 number
+        // - At least 1 lower case letter
+        // - At least 1 upper case letter
+        // - At least 1 special character of !@#%^
+        const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
+        if (regex.test(body.password))
+            body.password = this.createHashKey(body.password)
+        else
+            this.log.info('failed')
 
         // Store the data
         try {
-            body.email = '01b'
             response.data = await this.dbconn.model.create(body)
             response.data = response.data._doc
             delete response.data.password
