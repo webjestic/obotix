@@ -28,13 +28,13 @@ class ApiKeyClass extends baseClass.ObotixController {
     }
 
 
-    async createHashKey(plainTextApiKey) {
+    createHashKey(plainTextApiKey) {
         const salt = bcrypt.genSaltSync(this.saltRounds)
         const hash = bcrypt.hashSync(plainTextApiKey, salt)
         return hash
     }
     
-    async checkHashKey(plainTextApiKey, hashKey) {
+    checkHashKey(plainTextApiKey, hashKey) {
         const result = bcrypt.compareSync(plainTextApiKey, hashKey)
         return result
     }
@@ -79,7 +79,7 @@ class ApiKeyClass extends baseClass.ObotixController {
 
     // eslint-disable-next-line no-unused-vars
     async  get(req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
         const query = super.get(req, res)
         const paginate = this.paginate(req)
         const projection = { 
@@ -105,7 +105,7 @@ class ApiKeyClass extends baseClass.ObotixController {
 
 
     async post (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
 
         // Filter the input and prepare the body
         const body = super.post(req, res)
@@ -127,11 +127,11 @@ class ApiKeyClass extends baseClass.ObotixController {
 
         // Check if the document already exits
         try {
-            let existingDoc = await this.get({ query: { user: body.user } }, {})
+            let existingDoc = await this.dbconn.model.find({ user: body.user }).exec()
             if (existingDoc.data !== undefined && Object.keys(existingDoc.data).length > 0) {
                 response.status = 400
                 response.message = 'Document already exists.'
-                response.data = existingDoc
+                response.data = existingDoc.data
                 return response
             }
         } catch (ex) {
@@ -140,7 +140,7 @@ class ApiKeyClass extends baseClass.ObotixController {
         }
 
         // Encrypt password for storage
-        body.apikey = await this.createHashKey(body.apikey)
+        body.apikey = this.createHashKey(body.apikey)
 
         // Store the data
         try {
@@ -156,7 +156,7 @@ class ApiKeyClass extends baseClass.ObotixController {
 
 
     async put (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
         const body = super.put(req, res)
 
         if (body._id !== undefined && typeof body._id === 'string')
@@ -187,7 +187,7 @@ class ApiKeyClass extends baseClass.ObotixController {
 
 
     async delete (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
         const query = super.delete(req, res)
 
         if ((Object.keys(query).length === 0)) {

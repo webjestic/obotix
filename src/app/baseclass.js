@@ -41,12 +41,7 @@ class ObotixController extends ObotixClass {
     joi = Joi
     validator = validator
     dbconn = undefined
-
-    response = {
-        status: 200,
-        message: 'OK'
-    }
-    
+        
 
     constructor (namespace) { 
         super(namespace) 

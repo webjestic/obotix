@@ -16,6 +16,18 @@ class UsersClass extends baseClass.ObotixController {
         super('ctrl:users')
         this.dbconn = dbcollection()
     }
+
+
+    createHashKey(plainTextApiKey) {
+        const salt = bcrypt.genSaltSync(this.saltRounds)
+        const hash = bcrypt.hashSync(plainTextApiKey, salt)
+        return hash
+    }
+    
+    checkHashKey(plainTextApiKey, hashKey) {
+        const result = bcrypt.compareSync(plainTextApiKey, hashKey)
+        return result
+    }
  
 
     /**
@@ -25,7 +37,7 @@ class UsersClass extends baseClass.ObotixController {
      * @returns 
      */
     async get (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
         const query = super.get(req, res)
         const paginate = this.paginate(req)
         const projection = { 
@@ -52,7 +64,7 @@ class UsersClass extends baseClass.ObotixController {
      * @returns 
      */
     async post (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
 
         // Filter the input and prepare the body
         const body = super.post(req, res)
@@ -64,11 +76,11 @@ class UsersClass extends baseClass.ObotixController {
 
         // Check if the document already exits
         try {
-            let existingDoc = await this.get({ query: { user: body.user } }, {})
+            let existingDoc = await this.dbconn.model.find({ username: body.username }).exec()
             if (existingDoc.data !== undefined && Object.keys(existingDoc.data).length > 0) {
                 response.status = 400
                 response.message = 'Document already exists.'
-                response.data = existingDoc
+                response.data = existingDoc.data
                 return response
             }
         } catch (ex) {
@@ -77,8 +89,7 @@ class UsersClass extends baseClass.ObotixController {
         }
 
         // Encrypt password for storage
-        const salt = bcrypt.genSaltSync(this.saltRounds)
-        body.password = bcrypt.hashSync(body.password, salt)
+        body.password = this.createHashKey(body.password)
 
         // Store the data
         try {
@@ -100,7 +111,7 @@ class UsersClass extends baseClass.ObotixController {
      * @returns 
      */
     async put (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
         const body = super.put(req, res)
 
         if (body._id !== undefined && typeof body._id === 'string')
@@ -137,7 +148,7 @@ class UsersClass extends baseClass.ObotixController {
      * @returns 
      */
     async delete (req, res) {
-        var response = Object.assign(this.response)
+        var response = { status: 200, message: 'OK' }
         const query = super.delete(req, res)
 
         if ((Object.keys(query).length === 0)) {
