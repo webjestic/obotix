@@ -64,54 +64,6 @@ export default function (router) {
         }
     })
 
-    /*
-    // eslint-disable-next-line no-unused-vars
-    router.get('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
-        configs.getApiKey(req, res)
-            .then(response => {
-                res.status(200).json(response)
-            }).catch(err => {
-                if (err.status !== undefined) res.status(err.status).json(err)
-                else res.status(500).json(err)
-            })
-    })
-
-
-    // eslint-disable-next-line no-unused-vars
-    router.post('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
-        configs.postApiKey(req, res)
-            .then(response => {
-                res.status(200).json(response)
-            }).catch(err => {
-                if (err.status !== undefined) res.status(err.status).json(err)
-                else res.status(500).json(err)
-            })
-    })
-
-
-    // eslint-disable-next-line no-unused-vars
-    router.put('/apikey', rateLimit, apikey, role(roles.manager), async (req, res) => {
-        configs.putApiKey(req, res)
-            .then(response => {
-                res.status(200).json(response)
-            }).catch(err => {
-                if (err.status !== undefined) res.status(err.status).json(err)
-                else res.status(500).json(err)
-            })
-    })
-
-
-    // eslint-disable-next-line no-unused-vars
-    router.delete('/apikey', rateLimit, apikey, role(roles.admin), async (req, res) => {
-        configs.deleteApiKey(req, res)
-            .then(response => {
-                res.status(200).json(response)
-            }).catch(err => {
-                if (err.status !== undefined) res.status(err.status).json(err)
-                else res.status(500).json(err)
-            })
-    })
-    */
     
     return router
 }
