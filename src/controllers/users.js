@@ -93,6 +93,7 @@ class UsersClass extends baseClass.ObotixController {
 
         // Store the data
         try {
+            body.email = '01b'
             response.data = await this.dbconn.model.create(body)
             response.data = response.data._doc
             delete response.data.password

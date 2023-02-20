@@ -18,10 +18,12 @@ export default function (router) {
     router.get('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.get(req, res)
-            if (response.data !== undefined) res.status(response.status).json(response.data)
-            else res.status(response.status).json(response)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
         } catch(ex) {
-            res.status(500).json(ex)
+            throw new Error(ex.message)
         }
     })
 
@@ -29,10 +31,12 @@ export default function (router) {
     router.post('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.post(req, res)
-            if (response.data !== undefined && response.status === 200) res.status(response.status).json(response.data)
-            else res.status(response.status).json(response)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
         } catch(ex) {
-            res.status(500).json(ex)
+            throw new Error(ex.message)
         }
     })
 
@@ -40,10 +44,12 @@ export default function (router) {
     router.put('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.put(req, res)
-            if (response.data !== undefined) res.status(response.status).json(response.data)
-            else res.status(response.status).json(response)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
         } catch(ex) {
-            res.status(500).json(ex)
+            throw new Error(ex.message)
         }
     })
 
@@ -51,10 +57,12 @@ export default function (router) {
     router.delete('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.delete(req, res)
-            if (response.data !== undefined) res.status(response.status).json(response.data)
-            else res.status(response.status).json(response)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
         } catch(ex) {
-            res.status(500).json(ex)
+            throw new Error(ex.message)
         }
     })
 

@@ -27,7 +27,7 @@ export default function (router) {
                 res.status(200).json(response)
             }).catch(err => {
                 if (err.status !== undefined) res.status(err.status).json(err)
-                else res.status(500).json(err)
+                else throw new Error(err.message)
             })
     })
 
@@ -39,7 +39,7 @@ export default function (router) {
                 res.status(200).json(response)
             }).catch(err => {
                 if (err.status !== undefined) res.status(err.status).json(err)
-                else res.status(500).json(err)
+                else throw new Error(err.message)
             })
     })
     
