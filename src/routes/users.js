@@ -17,7 +17,8 @@ export default function (router) {
     router.get('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.get(req, res)
-            res.status(response.status).json(response)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
         } catch(ex) {
             res.status(500).json(ex)
         }
@@ -27,7 +28,8 @@ export default function (router) {
     router.post('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.post(req, res)
-            res.status(response.status).json(response)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
         } catch(ex) {
             res.status(500).json(ex)
         }
@@ -37,7 +39,8 @@ export default function (router) {
     router.post('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.put(req, res)
-            res.status(response.status).json(response)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
         } catch(ex) {
             res.status(500).json(ex)
         }
@@ -47,7 +50,8 @@ export default function (router) {
     router.post('/users', rateLimit, apikey, role(roles.manager), async (req, res) => {
         try {
             const response = await users.delete(req, res)
-            res.status(response.status).json(response)
+            if (response.data !== undefined) res.status(response.status).json(response.data)
+            else res.status(response.status).json(response)
         } catch(ex) {
             res.status(500).json(ex)
         }

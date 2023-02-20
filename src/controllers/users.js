@@ -19,7 +19,7 @@ class UsersClass extends baasClass.ObotixController {
  
 
     async get (req, res) {
-        var response = Object.create(this.response)
+        var response = Object.assign(this.response)
         const query = super.get(req, res)
         const paginate = this.paginate(req)
         const projection = { 
@@ -30,6 +30,7 @@ class UsersClass extends baasClass.ObotixController {
 
         try {
             response.data = await this.dbconn.model.find(query, projection).limit(paginate.limit).skip(paginate.page).exec()
+            return response
         } catch (ex) {
             let msg = 'UserClass.get() threw an exception:'
             this.log.error(msg, ex)
