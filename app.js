@@ -15,6 +15,10 @@ const log = obotix.getLogger('src:index')
 // const app = obotix.getApp()
 // app.use('/', myRoute(obotix.getRouter()) )
 
+// Accessing base classes
+// const controller = new obotix.baseClass.ObotixController()
+// log.info(controller.__modulename)
+
 
 const port = process.env.OAPI_PORT || 3000
 obotix.listen(port, () => {

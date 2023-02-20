@@ -261,7 +261,12 @@ class DBNodeUpdater extends DBVersionUpdater {
 }
 
 
+class DBAppUpdater extends DBVersionUpdater {
+}
+
+
 export default {
     DBVersionUpdater,
-    DBNodeUpdater
+    DBNodeUpdater,
+    DBAppUpdater
 }

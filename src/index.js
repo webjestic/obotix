@@ -10,6 +10,8 @@ import Http from './app/http.js'
 import Sys from './app/sys.js'
 import DBVersion from './app/dbversion.js'
 
+import BaseClass from './app/baseclass.js'
+
 import Fn from './app/fn/index.js'
 
 import rateLimit from './middleware/rateLimit.js'
@@ -25,8 +27,9 @@ class Obotix {
     http = Http
     sys = Sys
     fn = Fn
-    dbversion = undefined
+    baseClass = BaseClass
 
+    dbversion = undefined
     log = undefined
 
     constructor () {
