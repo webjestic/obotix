@@ -29,11 +29,11 @@ export default function (req, res, next){
     if (conf.logger.accesslog.enabled) {
         if (req.path !== '/live' && req.path !== '/ready') {
                 
-            const rip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+            const rip = req.get('x-forwarded-for') || req.socket.remoteAddress 
             const dt = Date.now()
             const ts = new Date(dt)
-            const uid = req.header('uid') || 'NA'
-            const apiuser = req.header('x-api-user') || 'guest'
+            const uid = req.get('uid') || 'NA'
+            const apiuser = req.get('x-api-user') || 'guest'
     
             const entry = `${new Date(ts).toISOString()} | ${os.hostname} | ${rip} | ${uid} | ${req.method} ${req.path}`
             const acceessEntry = { 

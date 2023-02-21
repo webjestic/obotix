@@ -26,16 +26,21 @@ export default function () {
                     required: true,
                     minlength: 4,
                     maxlength: 20,
-                    unique: true
+                    unique: true,
+                    match: /^[a-z0-9]{4,16}$/
                 },
                 email: {
                     type: String,
                     required: true,
                     minlength: 10, // feve@tn.in
                     maxlength: 255,
-                    unique: true
+                    unique: true,
+                    // eslint-disable-next-line no-useless-escape
+                    match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/
+
                 },
                 password: {
+                    // password stored as a bcrypt hash value
                     type: String,
                     required: true,
                     minlength: 5,
@@ -45,13 +50,15 @@ export default function () {
                     type: String,
                     required: true,
                     minlength: 2,
-                    maxlength: 20
+                    maxlength: 20,
+                    match: /^[a-zA-Z]{2,20}$/
                 },
                 lastName: {
                     type: String,
                     required: true,
                     minlength: 3,
-                    maxlength: 30
+                    maxlength: 30,
+                    match: /^[a-zA-Z]{3,30}$/
                 },
                 dob: {
                     type: Date,
@@ -71,7 +78,8 @@ export default function () {
                 },
                 role: {
                     type: Number,
-                    default: 0
+                    default: 0,
+                    enum: [0, 1, 2, 4, 8]
                 }
             }, 
             { 
@@ -79,9 +87,9 @@ export default function () {
             })
 
             dbconn.schema.methods.generateAuthToken = function() { 
-                const payload = { _id: this._id, email: this.email }
-                const token = jwt.sign(payload, process.env.OAPI_CRYPTO_KEY, { expiresIn: '2h'})
-                const refresh = jwt.sign(payload, process.env.OAPI_CRYPTO_KEY, { expiresIn: '4h'})
+                const payload = { _id: this._id, username: this.username, email: this.email }
+                const token = jwt.sign(payload, process.env.OAPI_CRYPTO_KEY, { algorithm: 'HS512', expiresIn: '9h'})
+                const refresh = jwt.sign(payload, process.env.OAPI_CRYPTO_KEY, { algorithm: 'HS512', expiresIn: '12h'})
                 log.debug(`_id: ${this._id} email ${this.email}`)
                 log.debug('jwt:', token)
                 log.debug('rjwt:', refresh)

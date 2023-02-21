@@ -90,3 +90,13 @@ router.get('/', rateLimit, apikey, role(roles.manager), async (req, res) => {
     // read write DB
 }
 ```
+
+## Req Express Object - API User & Auth User
+```javascript
+
+ function (req, res) {
+    console.log ( req.apiuser )
+    console.log ( req.authuser )
+ }
+
+```

@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 
 import dbcollection from '../models/users.js'
 import baseClass from '../app/baseclass.js'
@@ -7,7 +9,19 @@ import bcrypt from 'bcrypt'
 
 
 class UsersClass extends baseClass.ObotixController {
+
     saltRounds = 8
+    // SALT ROUND - TABLE
+    // rounds=8 : ~40 hashes/sec
+    // rounds=9 : ~20 hashes/sec
+    // rounds=10: ~10 hashes/sec
+    // rounds=11: ~5  hashes/sec
+    // rounds=12: 2-3 hashes/sec
+    // rounds=13: ~1 sec/hash
+    // rounds=14: ~1.5 sec/hash
+    // rounds=15: ~3 sec/hash
+    // rounds=25: ~1 hour/hash
+    // rounds=31: 2-3 days/hash
 
     /**
      * Initialize base class constructor, creating the unique this.log for this instance.
@@ -95,7 +109,7 @@ class UsersClass extends baseClass.ObotixController {
         // - At least 1 number
         // - At least 1 lower case letter
         // - At least 1 upper case letter
-        // - At least 1 special character of !@#%^
+        // - At least 1 special character of !@#$%^&*
         const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
         if (regex.test(body.password))
             body.password = this.createHashKey(body.password)
@@ -169,7 +183,7 @@ class UsersClass extends baseClass.ObotixController {
         }
 
         try {
-            this.log.warn(`DELETE: User by ${req.header['x-api-user']}`, query)
+            this.log.warn(`DELETE: User by ${req.get('x-api-user')}`, query)
             response.data = await this.dbconn.model.deleteMany(query).exec()
             return response
         } catch (ex) {

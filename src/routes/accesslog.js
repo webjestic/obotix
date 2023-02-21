@@ -3,7 +3,7 @@
  */
 
 import accesslog from '../controllers/accesslog.js'
-import apikey from '../middleware/apikey.js'
+import auth from '../middleware/auth.js'
 import rateLimit from '../middleware/rateLimit.js'
 import role from '../middleware/role.js'
 import config from '../app/config.js'
@@ -21,7 +21,7 @@ export default function (router) {
     const roles = config.getConfig().roles
 
     // eslint-disable-next-line no-unused-vars
-    router.get('/accesslogs', rateLimit, apikey, role(roles.manager), async (req, res) => {
+    router.get('/accesslogs', rateLimit, auth, role(roles.manager), async (req, res) => {
         accesslog.getAccesslogs(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -33,7 +33,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.delete('/accesslogs', rateLimit, apikey, role(roles.admin), async (req, res) => {
+    router.delete('/accesslogs', rateLimit, auth, role(roles.admin), async (req, res) => {
         accesslog.deleteAccessLogs(req, res)
             .then(response => {
                 res.status(200).json(response)

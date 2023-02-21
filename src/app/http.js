@@ -22,6 +22,7 @@ import apikeyRoute from '../routes/apikey.js'
 import accesslogRoute from '../routes/accesslog.js'
 import logRoute from '../routes/dblog.js'
 import usersRoute from '../routes/users.js'
+import accountRoute from '../routes/account.js'
 
 
 class Http {
@@ -51,6 +52,7 @@ class Http {
         this.app.use('/node', accesslogRoute(this.getRouter()))
         this.app.use('/node', logRoute(this.getRouter()))
         this.app.use('/node/admin', usersRoute(this.getRouter()))
+        this.app.use('/v1', accountRoute(this.getRouter()))
     }
 
 

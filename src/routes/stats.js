@@ -3,7 +3,7 @@
  */
 
 import stats from '../controllers/stats.js'
-import apikey from '../middleware/apikey.js'
+import auth from '../middleware/auth.js'
 import rateLimit from '../middleware/rateLimit.js'
 import role from '../middleware/role.js'
 import config from '../app/config.js'
@@ -21,7 +21,7 @@ export default function (router) {
 
     const roles = config.getConfig().roles
 
-    router.get('/', rateLimit, apikey, role(roles.manager), (req, res) => {
+    router.get('/', rateLimit, auth, role(roles.manager), (req, res) => {
         const response = stats.getStats(req, res)
         res.status(response.status).json(response.data)
     })

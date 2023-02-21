@@ -41,7 +41,7 @@ class ObotixController extends ObotixClass {
     joi = Joi
     validator = validator
     dbconn = undefined
-        
+
 
     constructor (namespace) { 
         super(namespace) 
@@ -50,9 +50,15 @@ class ObotixController extends ObotixClass {
 
     paginate(req) {
         let paginate = {}
+        var limit = 100
+        var page = 1
 
-        let limit = Number(req.query.limit) || 100
-        let page = Number(req.query.page) || 1
+        if (req.query !== undefined) {
+            if (req.query.limit !== undefined)
+                limit = Number(req.query.limit) 
+            if (req.query.page !== undefined)
+                page = Number(req.query.page)
+        }
     
         if (limit <= 0) limit = 100
         if (page <= 0) page = 1

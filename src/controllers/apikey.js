@@ -41,40 +41,34 @@ class ApiKeyClass extends baseClass.ObotixController {
 
     // eslint-disable-next-line no-unused-vars
     async  verifyApiKey(req, res) {
+        var response = { status: 401, data: {} }
+        const apikey = req.get('x-api-key') 
+        const apiuser = req.get('x-api-user') 
 
-        const apikey = req.header('x-api-key') 
-        const apiuser = req.header('x-api-user') 
-        let apikeys = undefined
-        let allowAccess = false
+        if (!apikey || !apiuser) return response
 
-        this.log.trace(`Middleware: apikey: API User: ${apiuser} Key: ${apikey}`)
+        try {
+            let apiKeyDoc = await this.dbconn.model.find({ 'user' : apiuser }).exec()
+            apiKeyDoc = apiKeyDoc[0]
+            const rightnow = new Date()
+            const expireyDate = new Date(apiKeyDoc.expirey)
+            this.log.debug('ApiKey Expirery date:', expireyDate)
 
-        if (apikey && apiuser) {
-            apikeys = await this.dbconn.model.find({ 'user' : apiuser }).exec()
-            apikeys = apikeys[0]
-            this.log.debug(apikeys)
-
-            try {
-                const rightnow = new Date()
-                const expireyDate = new Date(apikeys.expirey)
-                this.log.debug('ApiKey Expirery date:', expireyDate)
-                if (apikeys.user === apiuser && apikeys.enabled == true) {
-                    if (expireyDate.getTime() > rightnow.getTime()) {
-                        if (this.checkHashKey(apikey, apikeys.apikey))
-                            allowAccess = true
+            if (apiKeyDoc.user === apiuser && apiKeyDoc.enabled == true) {
+                if (expireyDate.getTime() > rightnow.getTime()) {
+                    if (this.checkHashKey(apikey, apiKeyDoc.apikey)) {
+                        response.status = 200
+                        response.data = apiKeyDoc
                     }
                 }
-
-            } catch(ex) {
-                this.log.error(ex)
-                allowAccess = false
             }
+
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            response.data = ex
         }
 
-        if (allowAccess) 
-            req.apiuser = apikeys
-
-        return allowAccess
+        return response
     }
 
     // eslint-disable-next-line no-unused-vars
@@ -197,7 +191,7 @@ class ApiKeyClass extends baseClass.ObotixController {
         }
 
         try {
-            this.log.warn(`DELETE: ApiKey by ${req.header['x-api-user']}`, query)
+            this.log.warn(`DELETE: ApiKey by ${req.get('x-api-user')}`, query)
             response.data = await this.dbconn.model.deleteMany(query).exec()
             return response
         } catch (ex) {

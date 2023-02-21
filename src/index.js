@@ -15,7 +15,7 @@ import BaseClass from './app/baseclass.js'
 import Fn from './app/fn/index.js'
 
 import rateLimit from './middleware/rateLimit.js'
-import apikey from './middleware/apikey.js'
+import auth from './middleware/auth.js'
 import role from './middleware/role.js'
 
 
@@ -68,8 +68,8 @@ class Obotix {
         switch (middlewareName.toLowerCase()) {
         case 'ratelimit':
             return rateLimit
-        case 'apikey':
-            return apikey
+        case 'auth':
+            return auth
         case 'role':
             return role
         default :

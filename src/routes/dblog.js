@@ -3,7 +3,7 @@
  */
 
 import dblogs from '../controllers/dblog.js'
-import apikey from '../middleware/apikey.js'
+import auth from '../middleware/auth.js'
 import rateLimit from '../middleware/rateLimit.js'
 import role from '../middleware/role.js'
 import config from '../app/config.js'
@@ -21,7 +21,7 @@ export default function (router) {
     const roles = config.getConfig().roles
 
     // eslint-disable-next-line no-unused-vars
-    router.get('/logs', rateLimit, apikey, role(roles.manager), async (req, res) => {
+    router.get('/logs', rateLimit, auth, role(roles.manager), async (req, res) => {
         dblogs.getLogs(req, res)
             .then(response => {
                 res.status(200).json(response)
@@ -33,7 +33,7 @@ export default function (router) {
 
 
     // eslint-disable-next-line no-unused-vars
-    router.delete('/logs', rateLimit, apikey, role(roles.admin), async (req, res) => {
+    router.delete('/logs', rateLimit, auth, role(roles.admin), async (req, res) => {
         dblogs.deleteLogs(req, res)
             .then(response => {
                 res.status(200).json(response)
