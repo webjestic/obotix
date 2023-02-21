@@ -12,7 +12,6 @@ import DBVersion from './app/dbversion.js'
 
 import BaseClass from './app/baseclass.js'
 
-import Fn from './app/fn/index.js'
 
 import rateLimit from './middleware/rateLimit.js'
 import auth from './middleware/auth.js'
@@ -26,7 +25,6 @@ class Obotix {
     dblog = DbLog
     http = Http
     sys = Sys
-    fn = Fn
     baseClass = BaseClass
 
     dbversion = undefined
