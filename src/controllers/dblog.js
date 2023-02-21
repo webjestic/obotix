@@ -2,105 +2,116 @@
  * 
  */
 
-import dbconn from '../models/dblog.js'
-import logger from '../app/logger.js'
-import getPaginate from '../app/fn/paginate.js'
-const log = logger.getLogger('ctrl:dblog')
+import dbcollection from '../models/dblog.js'
+import baseClass from '../app/baseclass.js'
 
 
-function getQuery(req) {
-    var query = {}
-    if (req.query.startDate !== undefined && req.query.endDate !== undefined) {
-        query.timestamp = {
-            '$gte': new Date(req.query.startDate),
-            '$lte': new Date(req.query.endDate)
+class DbLogClass extends baseClass.ObotixController {
+
+    constructor() {
+        super('ctrl:dblog')
+        this.dbconn = dbcollection()
+    }
+
+    prepareQuery(query) {
+        if (query.startDate !== undefined && query.endDate !== undefined) {
+            query.timestamp = {
+                '$gte': new Date(query.startDate),
+                '$lte': new Date(query.endDate)
+            }
         }
+        if (query.namespace !== undefined) query.namespace = { '$regex': query.namespace, '$options': 'i' }
+        if (query.server !== undefined) query.server = { '$regex': query.server, '$options': 'i' } 
+        if (query.entry !== undefined) query.entry = { '$regex': query.entry, '$options': 'i' } 
+
+        return query
     }
-    if (req.query.namespace !== undefined) query.namespace = { '$regex': req.query.namespace, '$options': 'i' }
-    if (req.query.server !== undefined) query.server = { '$regex': req.query.server, '$options': 'i' } 
-    if (req.query.level !== undefined) query.level = req.query.level
-    if (req.query.entry !== undefined) query.entry = { '$regex': req.query.entry, '$options': 'i' } 
-    
-    return query
-}
 
 
-// eslint-disable-next-line no-unused-vars
-async function getLogs(req, res) {
+    async get (req, res) {
+        var response = { status: 200, message: 'OK' }
+        var query = super.get(req, res)
+        query = this.prepareQuery(query)
 
-    const dblog = dbconn()
+        try {
+            var count = await this.dbconn.model.count()
+            var paginate = this.paginate(req)
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
 
-    const count = await dblog.model.count()
-    log.debug(`count=${count}`)
-    log.debug(req.query)
+        if (query.oneline !== undefined) {
+            var oneline = query.oneline
+            delete query.oneline
+        }
 
-    let query = getQuery(req)
-    let paginate = getPaginate(req)
+        try { 
+            var doc = await this.dbconn.model.find(query).limit(paginate.limit).skip(paginate.page).exec()
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
 
-    return dblog.model.find(query).limit(paginate.limit).skip(paginate.page).exec()
-        .then(doc => {
-            var result = {}
-            
-            if (req.query.oneline !== undefined) {
-                if (req.query.oneline === 'true') {
-                    result.count = count
-                    result.pagelimit = `Page ${paginate.pageDisplay} | Limit ${paginate.limit}`
-                    result.returned = 0
-                    result.entries = []
-                    for (const [key, entry] of Object.entries(doc)) {
-                        try {
-                            var logentry = `[${new Date(entry.timestamp).toISOString()} ${entry.server}]`
-                            logentry = logentry + ` ${entry.level.toUpperCase()} ${entry.namespace} ${entry.entry}`
-                            result.entries.push(logentry)
-                            result.returned = Number(key) + 1
-                        } catch(ex) {
-                            log.error(ex)
-                        }
+        var result = {}
+        if (oneline !== undefined) {
+            if (oneline === 'true') {
+                result.count = count
+                result.pagelimit = `Page ${paginate.pageDisplay} | Limit ${paginate.limit}`
+                result.returned = 0
+                result.entries = []
+                for (const [key, entry] of Object.entries(doc)) {
+                    try {
+                        var logentry = `[${new Date(entry.timestamp).toISOString()} ${entry.server}]`
+                        logentry = logentry + ` ${entry.level.toUpperCase()} ${entry.namespace} ${entry.entry}`
+                        result.entries.push(logentry)
+                        result.returned = Number(key) + 1
+                    } catch(ex) {
+                        this.log.error(ex.message, ex)
+                        throw new Error(ex.message)
                     }
-                } else
-                    result = doc
-            } else 
+                }
+            } else
                 result = doc
+        } else 
+            result = doc
 
-            return result
-        }).catch(err => {
-            log.error(err)
-            return err
-        })
-}
-
-
-// eslint-disable-next-line no-unused-vars
-async function deleteLogs(req, res) {
-
-    const dblog = dbconn()
-
-    log.debug('query', req.query)
-    var query = getQuery(req)
-
-    // if no parameters were sent, return a rejected promise.
-    log.debug(`query length ${Object.keys(query).length}`)
-    if ((Object.keys(query).length === 0) && req.query.deleteall === undefined) {
-        return new Promise((resolve, reject) => {
-            reject({ status: 400, message: 'Query Params Required.'})
-        })
+        response.data = result
+        return response
     }
 
-    // if the mighty deleteall param was sent, set the query to trash it all.
-    if (req.query.deleteall !== undefined && req.query.deleteall === 'true') 
-        query = {}
-        
-    return dblog.model.deleteMany(query).exec()
-        .then(response => {
-            return response
-        }).catch(err => {
-            log.error(err)
-            return err  
-        })
 
+    async delete (req, res) {
+        var response = { status: 200, message: 'OK' }
+        var query = super.delete(req, res)
+        query = this.prepareQuery(query)
+
+        // if no parameters were sent, return a rejected promise.
+        this.log.debug(`query length ${Object.keys(query).length}`)
+        if ((Object.keys(query).length === 0) && query.deleteall === undefined) {
+            response.status = 400
+            response.message = 'Query Params Required.'
+            return response
+        }
+
+        // if the mighty deleteall param was sent, set the query to trash it all.
+        if (query.deleteall !== undefined && query.deleteall === 'true') 
+            query = {}
+        
+        try {
+            response.data = await this.dbconn.model.deleteMany(query).exec()
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+
+        return response
+    }
 }
 
-export default {
-    getLogs,
-    deleteLogs
+
+var dblogClass = undefined
+export default function () {
+    if (dblogClass === undefined) dblogClass = new DbLogClass
+    return dblogClass
 }
