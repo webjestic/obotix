@@ -124,6 +124,13 @@ class AccountClass extends baseClass.ObotixController {
     }
 
 
+    /**
+     * Account owner profile. Can only get their own profile.
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async get (req, res) {
         var response = { status: 200, message: 'OK' }
 
@@ -153,6 +160,12 @@ class AccountClass extends baseClass.ObotixController {
     }
 
  
+    /**
+     * Account owner update. Can only update their own account.
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async put (req, res) {
         var response = { status: 200, message: 'OK' }
 
@@ -167,7 +180,12 @@ class AccountClass extends baseClass.ObotixController {
     }
 
 
- 
+    /**
+     * Account owner deletion. Can only delete their own account.
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async delete (req, res) {
         var response = { status: 200, message: 'OK' }
 

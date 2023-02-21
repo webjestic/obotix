@@ -41,6 +41,9 @@ export default function (router) {
     })
 
 
+    /**
+     * Account owner profile. Can only get their own profile.
+     */
     router.get('/account', rateLimit, auth, role(roles.manager), async (req, res) => {
         try {
             const response = await account.get(req, res)
@@ -54,6 +57,9 @@ export default function (router) {
     })
 
 
+    /**
+     * Account owner update. Can only update their own account.
+     */
     router.put('/account', rateLimit, auth, role(roles.manager), async (req, res) => {
         try {
             const response = await account.put(req, res)
@@ -67,6 +73,9 @@ export default function (router) {
     })
 
 
+    /**
+     * Account owner delete. Can only delete their own account.
+     */
     router.delete('/account', rateLimit, auth, role(roles.manager), async (req, res) => {
         try {
             const response = await account.delete(req, res)
