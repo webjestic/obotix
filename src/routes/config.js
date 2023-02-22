@@ -2,7 +2,7 @@
  * 
  */
 
-import configs from '../controllers/config.js'
+import ConfigsCtrl from '../controllers/config.js'
 import auth from '../middleware/auth.js'
 import rateLimit from '../middleware/rateLimit.js'
 import role from '../middleware/role.js'
@@ -19,28 +19,31 @@ import config from '../app/config.js'
 export default function (router) {
 
     const roles = config.getConfig().roles
+    const configsCtrl = ConfigsCtrl()
 
-    // eslint-disable-next-line no-unused-vars
     router.get('/config', rateLimit, auth, role(roles.manager), async (req, res) => {
-        configs.getConfigs(req, res)
-            .then(response => {
-                res.status(200).json(response)
-            }).catch(err => {
-                if (err.status !== undefined) res.status(err.status).json(err)
-                else throw new Error(err.message)
-            })
+        try {
+            const response = await configsCtrl.get(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
     })
 
 
-    // eslint-disable-next-line no-unused-vars
-    router.put('/config', rateLimit, auth, role(roles.admin), async (req, res) => {
-        configs.putConfigs(req, res)
-            .then(response => {
-                res.status(200).json(response)
-            }).catch(err => {
-                if (err.status !== undefined) res.status(err.status).json(err)
-                else throw new Error(err.message)
-            })
+    router.put('/config', rateLimit, auth, role(roles.manager), async (req, res) => {
+        try {
+            const response = await configsCtrl.put(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
     })
     
     return router
