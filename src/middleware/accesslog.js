@@ -21,7 +21,7 @@ const log = logger.getLogger('mw:accesslog')
  * @param {function} next 
  */
 // eslint-disable-next-line no-unused-vars
-export default function (req, res, next){
+export default async function (req, res, next){
 
     const accesslogs = dbconn()
 

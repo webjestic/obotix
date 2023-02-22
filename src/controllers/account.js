@@ -48,15 +48,67 @@ class AccountClass extends baseClass.ObotixController {
 
     async register(req, res) {
         var response = { status: 200, message: 'OK' }
+        var body = this.bodyFromRequest(req, res)
 
         try {
-            if (req.body.password === req.body.passwordRepeat)
-                response = await this.post(req, res)
-            return response
+            if (body.password !== body.passwordRepeat) {
+                response.status = 401
+                response.message = 'Password does not match passwordRepeat.'
+            }
+            delete body.passwordRepeat
+            if (body.role !== undefined) delete body.role
         } catch (ex) {
             this.log.error(ex.message)
             throw new Error(ex.message)
         }
+
+
+        // Check if the document already exits
+        try {
+            let existingDoc = await this.dbconn.model.find({ username: body.username }).exec()
+            if (existingDoc.data !== undefined && Object.keys(existingDoc.data).length > 0) {
+                response.status = 400
+                response.message = 'Account already exists.'
+                return response
+            }
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+
+        // Encrypt password for storage
+        // Password Requirements
+        try {
+            const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
+            if (regex.test(body.password))
+                body.password = this.createHashKey(body.password)
+            else {
+                response.status = 400
+                response.message = `Password does not meet the strength requirements.
+            - Minimum 8 characters
+            - Maximum 32 characters
+            - At least 1 number
+            - At least 1 lower case letter
+            - At least 1 upper case letter
+            - At least 1 special character of !@#$%^&*`
+                return response
+            }
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+
+        // Store the data
+        try {
+            response.data = await this.dbconn.model.create(body)
+            response.data = response.data._doc
+            delete response.data.password
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+
+        return response
     }
 
 
@@ -116,12 +168,28 @@ class AccountClass extends baseClass.ObotixController {
             projection._id = 0
             response.data.account = await this.dbconn.model.find({ email: query.email }, projection).exec()
             response.data.account = response.data.account[0]
-            return response
+            this.log.info(`${response.data.account.username} login.`)
         } catch (ex) {
             this.log.error(ex.message)
             throw new Error(ex.message)
         }
 
+        return response
+    }
+
+
+    // eslint-disable-next-line no-unused-vars
+    async logout (req, res) {
+        var response = { status: 200, message: 'OK' }
+
+        try {
+            this.log.info(`${req.authuser.username} logout.`)
+        } catch (ex) {
+            this.log.error(ex.message)
+            throw new Error(ex.message)
+        }
+
+        return response
     }
 
 

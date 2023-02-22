@@ -28,6 +28,19 @@ export default function (router) {
     })
 
 
+    router.get('/account/logout', rateLimit, auth, role(roles.manager), async (req, res) => {
+        try {
+            const response = await account.logout(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
+    })
+
+
     router.post('/account/register', rateLimit, auth, role(roles.manager), async (req, res) => {
         try {
             const response = await account.register(req, res)

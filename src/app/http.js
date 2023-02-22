@@ -7,12 +7,16 @@ import logger from './logger.js'
 import swaggerUi from 'swagger-ui-express'
 import YAML from 'yamljs'
 import 'express-async-errors'
+import helmet from 'helmet'
+import cors from 'cors'
 
 import statsmw from '../middleware/stats.js'
 import internalError from '../middleware/internalError.js'
 import notFound from '../middleware/notFound.js'
 import accesslog from '../middleware/accesslog.js'
 import dbhealth from '../middleware/dbhealth.js'
+
+import rateLimit from '../middleware/rateLimit.js'
 
 import healthz from '../routes/healthz.js'
 import stats from '../routes/stats.js'
@@ -39,9 +43,11 @@ class Http {
         this.app.use(express.urlencoded({ extended: false }))
 
         this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(YAML.load('config/swagger.yaml')))
+        this.app.use(helmet())
+        this.app.use(cors())
 
         this.app.use(dbhealth)
-        this.app.use(accesslog)
+        this.app.use(rateLimit, accesslog)
         this.app.use(statsmw)
 
         this.app.use('/', healthz(this.getRouter()))
