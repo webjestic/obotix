@@ -7,22 +7,26 @@ const log = logger.getLogger('mw:role')
 
 export default function(role)  {
     return (req, res, next) => {
-        log.debug ('req.apiuser.role', req.apiuser.role)
-        log.debug ('required role', role)
+        try {
+            log.debug (`req.apiuser.role ${req.authuser.role} and requires ${role}`)
         
-        if (req.apiuser.role === undefined)
-            return res.status(403).json( { message: 'Forbidden: Undefined role.' } )
+            if (req.authuser.role === undefined)
+                return res.status(403).json( { message: 'Forbidden: Undefined role.' } )
+        } catch (ex) {
+            log.error(ex.message, ex)
+            return res.status(403).json( { message: 'Forbidden: Internal error validating role.' } )
+        }
 
         try {
-            if (req.apiuser.role < role) 
+            if (req.authuser.role < role) 
                 return res.status(403).json( { message: 'Forbidden: Not enough privileges.' } )
 
             // this is the only path to success (an approved privelage)
-            if (req.apiuser.role >= role)
+            if (req.authuser.role >= role)
                 next()
 
         } catch (ex) {
-            log.error('error checking roles', ex)
+            log.error(ex.message, ex)
         }
 
     }

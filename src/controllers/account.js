@@ -1,0 +1,239 @@
+/**
+ * 
+ * https://www.vonage.com/communications-apis/pricing/?icmp=l3nav|l3nav_pricing_novalue
+ * https://www.twilio.com/en-us/pricing
+ */
+
+import dbcollection from '../models/users.js'
+import baseClass from '../app/baseclass.js'
+import UsersCtrl from '../controllers/users.js'
+
+import jwt from 'jsonwebtoken'
+
+class AccountClass extends baseClass.ObotixController {
+
+    usersCtrl = undefined
+
+    /**
+     * Initialize base class constructor, creating the unique this.log for this instance.
+     */
+    constructor() {
+        super('ctrl:account')
+        this.dbconn = dbcollection()
+        this.usersCtrl = UsersCtrl()
+    }
+
+
+    // eslint-disable-next-line no-unused-vars
+    async verifyToken(req, res) {
+        var response = { status: 401, data: {} }
+        const token = req.get('x-auth-token')
+
+        if (!token) return response
+      
+        try {
+            const decoded = jwt.verify(token, process.env.OAPI_CRYPTO_KEY, {algorithm: 'HS512'})
+            this.log.debug('decoded token', decoded)
+            // req.authuser = decoded 
+            response.status = 200
+            response.data = decoded
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            response.data = ex
+        }
+
+        return response
+    }
+
+
+    async register(req, res) {
+        var response = { status: 200, message: 'OK' }
+
+        try {
+            if (req.body.password === req.body.passwordRepeat)
+                response = await this.post(req, res)
+            return response
+        } catch (ex) {
+            this.log.error(ex.message)
+            throw new Error(ex.message)
+        }
+    }
+
+
+    // eslint-disable-next-line no-unused-vars
+    async login(req, res) {
+        var response = { status: 200, message: 'OK' }
+        var query = this.bodyFromRequest(req.body)
+        var projection = { 
+            _id: 1, 
+            __v: 0
+        }
+
+        // retrieve user account document
+        try {
+            response.data = await this.dbconn.model.find({ email: query.email }, projection).exec()
+        } catch (ex) {
+            this.log.error(ex.message)
+            throw new Error(ex.message)
+        }
+
+        // if no document was found for the user
+        try {
+            if (response.data[0]._id === undefined) {
+                this.log.debug(`Login Fail: No document for ${query.email}`)
+                response.status = 401
+                response.message = 'Invalid login attempt; credentials.'
+                return response
+            }
+        } catch (ex) {
+            this.log.error(ex.message)
+            throw new Error(ex.message)
+        }
+
+        // singualize document and validate password
+        try {
+            response.data = response.data[0]
+            if (response.data.email === query.email) {
+                if (!this.usersCtrl.checkHashKey(query.password, response.data.password)) {
+                    this.log.debug(`Login Fail: Passwords do not match for ${req.body.email}`)
+                    response.status = 401
+                    response.message = 'Invalid login attempt; credentials.'
+                    return response
+                }
+            }
+        } catch (ex) {
+            this.log.error(ex.message)
+            throw new Error(ex.message)
+        }
+
+        // logged in
+        try {
+            const authToken = response.data.generateAuthToken()
+            response.data = {} 
+            response.data.auth = authToken
+            projection.password = 0
+            projection.role = 0
+            projection._id = 0
+            response.data.account = await this.dbconn.model.find({ email: query.email }, projection).exec()
+            response.data.account = response.data.account[0]
+            return response
+        } catch (ex) {
+            this.log.error(ex.message)
+            throw new Error(ex.message)
+        }
+
+    }
+
+
+    /**
+     * Account owner profile. Can only get their own profile.
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+    // eslint-disable-next-line no-unused-vars
+    async get (req, res) {
+        try {
+            this.log.debug(`Request AuthUser: ${req.authuser.username}`)
+            var response = { status: 200, message: 'OK' }
+            var query = { username: req.authuser.username }
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+
+        const projection = { 
+            _id: 0, 
+            password: 0,
+            role: 0,
+            __v: 0
+        }
+
+        try {
+            response.data = await this.dbconn.model.find(query, projection).exec()
+            response.data = response.data[0]
+        } catch (ex) {
+            let msg = 'UserClass.get() threw an exception:'
+            this.log.error(msg, ex)
+            throw new Error(`Exception: See previos ERROR: ${msg}`) 
+        }
+
+        return response
+    }
+
+ 
+    /**
+     * Account owner update. Can only update their own account.
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+    async put (req, res) {
+        try {
+            this.log.debug(`Request AuthUser: ${req.authuser.username}`)
+            var response = { status: 200, message: 'OK' }
+            var body = super.put(req, res)
+            var filter = { username: req.authuser.username}
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+        
+        const options = { 
+            projection: {
+                _id: 0,
+                password: 0,
+                role: 0,
+                __v: 0
+            },
+            upsert: true,
+            new: true
+        }
+
+        try {
+            response.data = await this.dbconn.model.findOneAndUpdate(filter, body, options)
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error (ex.message)
+        }
+
+        return response 
+    }
+
+
+    /**
+     * Account owner deletion. Can only delete their own account.
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+    // eslint-disable-next-line no-unused-vars
+    async delete (req, res) {
+        try {
+            this.log.debug(`Request AuthUser: ${req.authuser.username}`)
+            var response = { status: 200, message: 'OK' }
+            var filter = { username: req.authuser.username }
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
+
+        try {
+            response.data = await this.dbconn.model.deleteMany(filter).exec()
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error (ex.message)
+        }
+
+        return response 
+    }
+}
+
+
+var accountClass = undefined
+export default function () {
+    if (accountClass === undefined) accountClass = new AccountClass
+    return accountClass
+}
+

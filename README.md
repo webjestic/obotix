@@ -63,7 +63,7 @@ const rateLimit = obotix.getMiddleware('apiKey')
 
 router.put('/', rateLimit, apikey, async (req, res) => {
 
-    console.log( req.apiuser.user )
+    console.log( req.apiuser.username )
     console.log( req.apiuser.apikey )
     console.log( req.apiuser.role )
     console.log( req.apiuser.expiery )
@@ -89,4 +89,14 @@ router.get('/', rateLimit, apikey, role(roles.manager), async (req, res) => {
     // execute auth required code
     // read write DB
 }
+```
+
+## Req Express Object - API User & Auth User
+```javascript
+
+ function (req, res) {
+    console.log ( req.apiuser )
+    console.log ( req.authuser )
+ }
+
 ```

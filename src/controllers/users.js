@@ -2,12 +2,13 @@
  * 
  */
 
-import dbcollection from '../models/apikey.js'
+import dbcollection from '../models/users.js'
 import baseClass from '../app/baseclass.js'
 
 import bcrypt from 'bcrypt'
 
-class ApiKeyClass extends baseClass.ObotixController {
+
+class UsersClass extends baseClass.ObotixController {
 
     saltRounds = 8
     // SALT ROUND - TABLE
@@ -22,8 +23,11 @@ class ApiKeyClass extends baseClass.ObotixController {
     // rounds=25: ~1 hour/hash
     // rounds=31: 2-3 days/hash
 
+    /**
+     * Initialize base class constructor, creating the unique this.log for this instance.
+     */
     constructor() {
-        super('ctrl:apikey')
+        super('ctrl:users')
         this.dbconn = dbcollection()
     }
 
@@ -38,66 +42,42 @@ class ApiKeyClass extends baseClass.ObotixController {
         const result = bcrypt.compareSync(plainTextApiKey, hashKey)
         return result
     }
+ 
 
-    // eslint-disable-next-line no-unused-vars
-    async  verifyApiKey(req, res) {
-        var response = { status: 401, data: {} }
-        const apikey = req.get('x-api-key') 
-        const apiuser = req.get('x-api-user') 
-
-        if (!apikey || !apiuser) return response
-
-        try {
-            let apiKeyDoc = await this.dbconn.model.find({ 'user' : apiuser }).exec()
-            apiKeyDoc = apiKeyDoc[0]
-            const rightnow = new Date()
-            const expireyDate = new Date(apiKeyDoc.expirey)
-            this.log.debug('ApiKey Expirery date:', expireyDate)
-
-            if (apiKeyDoc.username === apiuser && apiKeyDoc.enabled == true) {
-                if (expireyDate.getTime() > rightnow.getTime()) {
-                    if (this.checkHashKey(apikey, apiKeyDoc.apikey)) {
-                        response.status = 200
-                        response.data = apiKeyDoc
-                    }
-                }
-            }
-
-        } catch (ex) {
-            this.log.error(ex.message, ex)
-            response.data = ex
-        }
-
-        return response
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    async  get(req, res) {
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+    async get (req, res) {
         var response = { status: 200, message: 'OK' }
         const query = super.get(req, res)
         const paginate = this.paginate(req)
         const projection = { 
-            _id: 1, 
-            apikey: 0,
+            _id: 0, 
+            password: 0,
+            role: 0,
             __v: 0
         }
-
-        if (query.isexpired !== undefined) {
-            if (query.isexpired === 'true') 
-                query.expirey = { '$lte': new Date(Date.now()) }   
-        }
-        if (query.role !== undefined) query.role = { '$eq': Number(query.role) }
 
         try {
             response.data = await this.dbconn.model.find(query, projection).limit(paginate.limit).skip(paginate.page).exec()
             return response
         } catch (ex) {
-            this.log.error(ex.message, ex)
-            throw new Error(`Exception: See previos ERROR: ${ex.message}`) 
+            let msg = 'UserClass.get() threw an exception:'
+            this.log.error(msg, ex)
+            throw new Error(`Exception: See previos ERROR: ${msg}`) 
         }
     }
 
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async post (req, res) {
         var response = { status: 200, message: 'OK' }
 
@@ -109,19 +89,9 @@ class ApiKeyClass extends baseClass.ObotixController {
             return response
         }
 
-        if (body.apikey === undefined ||
-            body.username === undefined ||
-            body.expirey === undefined ||
-            body.role === undefined ||
-            body.enabled === undefined) {
-            response.status = 400
-            response.message = 'Invalid document body.'
-            return response
-        }
-
         // Check if the document already exits
         try {
-            let existingDoc = await this.dbconn.model.find({ user: body.username }).exec()
+            let existingDoc = await this.dbconn.model.find({ username: body.username }).exec()
             if (existingDoc.data !== undefined && Object.keys(existingDoc.data).length > 0) {
                 response.status = 400
                 response.message = 'Document already exists.'
@@ -134,13 +104,24 @@ class ApiKeyClass extends baseClass.ObotixController {
         }
 
         // Encrypt password for storage
-        body.apikey = this.createHashKey(body.apikey)
+        // Password Requirements
+        // - Minimum 8 characters
+        // - Maximum 32 characters
+        // - At least 1 number
+        // - At least 1 lower case letter
+        // - At least 1 upper case letter
+        // - At least 1 special character of !@#$%^&*
+        const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
+        if (regex.test(body.password))
+            body.password = this.createHashKey(body.password)
+        else
+            this.log.info('failed')
 
         // Store the data
         try {
             response.data = await this.dbconn.model.create(body)
             response.data = response.data._doc
-            delete response.data.apikey
+            delete response.data.password
             return response
         } catch (ex) {
             this.log.error(ex.message, ex)
@@ -149,6 +130,12 @@ class ApiKeyClass extends baseClass.ObotixController {
     }
 
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async put (req, res) {
         var response = { status: 200, message: 'OK' }
         const body = super.put(req, res)
@@ -160,10 +147,10 @@ class ApiKeyClass extends baseClass.ObotixController {
             response.message = '_id required for update.'
             return response
         }
-
+        
         const options = { 
             projection: {
-                apikey: 0,
+                password: 0,
                 __v: 0
             },
             upsert: true,
@@ -180,6 +167,12 @@ class ApiKeyClass extends baseClass.ObotixController {
     }
 
 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
     async delete (req, res) {
         var response = { status: 200, message: 'OK' }
         const query = super.delete(req, res)
@@ -191,7 +184,7 @@ class ApiKeyClass extends baseClass.ObotixController {
         }
 
         try {
-            this.log.warn(`DELETE: ApiKey by ${req.authuser.username}`, query)
+            this.log.warn(`DELETE: User by ${req.authuser.username}`, query)
             response.data = await this.dbconn.model.deleteMany(query).exec()
             return response
         } catch (ex) {
@@ -199,12 +192,12 @@ class ApiKeyClass extends baseClass.ObotixController {
             throw new Error (ex.message)
         }
     }
-
 }
 
 
-var apiKey = undefined
+var usersClass = undefined
 export default function () {
-    if (apiKey === undefined) apiKey = new ApiKeyClass()
-    return apiKey
+    if (usersClass === undefined) usersClass = new UsersClass
+    return usersClass
 }
+// export default UsersClass

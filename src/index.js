@@ -10,10 +10,11 @@ import Http from './app/http.js'
 import Sys from './app/sys.js'
 import DBVersion from './app/dbversion.js'
 
-import Fn from './app/fn/index.js'
+import BaseClass from './app/baseclass.js'
+
 
 import rateLimit from './middleware/rateLimit.js'
-import apikey from './middleware/apikey.js'
+import auth from './middleware/auth.js'
 import role from './middleware/role.js'
 
 
@@ -24,9 +25,9 @@ class Obotix {
     dblog = DbLog
     http = Http
     sys = Sys
-    fn = Fn
-    dbversion = undefined
+    baseClass = BaseClass
 
+    dbversion = undefined
     log = undefined
 
     constructor () {
@@ -65,8 +66,8 @@ class Obotix {
         switch (middlewareName.toLowerCase()) {
         case 'ratelimit':
             return rateLimit
-        case 'apikey':
-            return apikey
+        case 'auth':
+            return auth
         case 'role':
             return role
         default :

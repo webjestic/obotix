@@ -1,77 +1,71 @@
+
 /**
  * 
  */
 
-import ApiKeyCtrl from '../controllers/apikey.js'
+import usersCtrl from '../controllers/users.js'
 import auth from '../middleware/auth.js'
 import rateLimit from '../middleware/rateLimit.js'
 import role from '../middleware/role.js'
 import config from '../app/config.js'
 
-/**
- * Function accepts a router (ideally a freshly created router) and adds REST methods.
- * Function should be simply handle the route status and response, be evaluating the
- * controllers returned json object.
- * 
- * @param {Object} router 
- * @returns {Object} 
- */
 export default function (router) {
 
     const roles = config.getConfig().roles
-    const apiKeyCtrl = ApiKeyCtrl()
-
-    router.get('/apikey', rateLimit, auth, role(roles.manager), async (req, res) => {
-        try {
-            const response = await apiKeyCtrl.get(req, res)
-            if (response.data !== undefined && response.status === 200) 
-                res.status(response.status).json(response.data)
-            else 
-                res.status(response.status).json(response)
-        } catch(ex) {
-            throw new Error(ex.message)
-        }
-    })
-
-
-    router.post('/apikey', rateLimit, auth, role(roles.manager), async (req, res) => {
-        try {
-            const response = await apiKeyCtrl.post(req, res)
-            if (response.data !== undefined && response.status === 200) 
-                res.status(response.status).json(response.data)
-            else 
-                res.status(response.status).json(response)
-        } catch(ex) {
-            throw new Error(ex.message)
-        }
-    })
-
-
-    router.put('/apikey', rateLimit, auth, role(roles.manager), async (req, res) => {
-        try {
-            const response = await apiKeyCtrl.put(req, res)
-            if (response.data !== undefined && response.status === 200) 
-                res.status(response.status).json(response.data)
-            else 
-                res.status(response.status).json(response)
-        } catch(ex) {
-            throw new Error(ex.message)
-        }
-    })
-
-
-    router.delete('/apikey', rateLimit, auth, role(roles.manager), async (req, res) => {
-        try {
-            const response = await apiKeyCtrl.delete(req, res)
-            if (response.data !== undefined && response.status === 200) 
-                res.status(response.status).json(response.data)
-            else 
-                res.status(response.status).json(response)
-        } catch(ex) {
-            throw new Error(ex.message)
-        }
-    })
-
+    const users = usersCtrl()
     
+
+    router.get('/users', rateLimit, auth, role(roles.manager), async (req, res) => {
+        try {
+            const response = await users.get(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
+    })
+
+
+    router.post('/users', rateLimit, auth, role(roles.manager), async (req, res) => {
+        try {
+            const response = await users.post(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
+    })
+
+
+    router.put('/users', rateLimit, auth, role(roles.manager), async (req, res) => {
+        try {
+            const response = await users.put(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
+    })
+
+
+    router.delete('/users', rateLimit, auth, role(roles.manager), async (req, res) => {
+        try {
+            const response = await users.delete(req, res)
+            if (response.data !== undefined && response.status === 200) 
+                res.status(response.status).json(response.data)
+            else 
+                res.status(response.status).json(response)
+        } catch(ex) {
+            throw new Error(ex.message)
+        }
+    })
+
+
     return router
 }
