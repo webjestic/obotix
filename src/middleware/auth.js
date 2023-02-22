@@ -15,7 +15,7 @@ export default async function (req, res, next) {
     const accountCtrl = AccountCtrl()
 
     try {
-        var result = await accountCtrl.verifyToken(res, req)
+        var result = await accountCtrl.verifyToken(req, res)
         if (result.status === 200) {
             req.authuser = result.data
             next()

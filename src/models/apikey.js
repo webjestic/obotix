@@ -29,7 +29,7 @@ export default function () {
                     maxlength: 80, 
                     unique: true
                 },
-                user: {
+                username: {
                     type: String,
                     required: true,
                     minlength: 4,   // MyTN-Team

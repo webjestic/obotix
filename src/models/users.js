@@ -87,7 +87,7 @@ export default function () {
             })
 
             dbconn.schema.methods.generateAuthToken = function() { 
-                const payload = { _id: this._id, username: this.username, email: this.email }
+                const payload = { _id: this._id, username: this.username, email: this.email, role: this.role  }
                 const token = jwt.sign(payload, process.env.OAPI_CRYPTO_KEY, { algorithm: 'HS512', expiresIn: '9h'})
                 const refresh = jwt.sign(payload, process.env.OAPI_CRYPTO_KEY, { algorithm: 'HS512', expiresIn: '12h'})
                 log.debug(`_id: ${this._id} email ${this.email}`)

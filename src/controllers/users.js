@@ -55,8 +55,9 @@ class UsersClass extends baseClass.ObotixController {
         const query = super.get(req, res)
         const paginate = this.paginate(req)
         const projection = { 
-            _id: 1, 
+            _id: 0, 
             password: 0,
+            role: 0,
             __v: 0
         }
 
@@ -183,7 +184,7 @@ class UsersClass extends baseClass.ObotixController {
         }
 
         try {
-            this.log.warn(`DELETE: User by ${req.get('x-api-user')}`, query)
+            this.log.warn(`DELETE: User by ${req.authuser.username}`, query)
             response.data = await this.dbconn.model.deleteMany(query).exec()
             return response
         } catch (ex) {

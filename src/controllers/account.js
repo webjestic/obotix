@@ -32,7 +32,7 @@ class AccountClass extends baseClass.ObotixController {
         if (!token) return response
       
         try {
-            const decoded = jwt.verify(token, process.env.OAPI_JWT_KEY, {algorithm: 'HS512'})
+            const decoded = jwt.verify(token, process.env.OAPI_CRYPTO_KEY, {algorithm: 'HS512'})
             this.log.debug('decoded token', decoded)
             // req.authuser = decoded 
             response.status = 200
@@ -108,13 +108,14 @@ class AccountClass extends baseClass.ObotixController {
 
         // logged in
         try {
+            const authToken = response.data.generateAuthToken()
+            response.data = {} 
+            response.data.auth = authToken
             projection.password = 0
             projection.role = 0
             projection._id = 0
-            response.data = {} 
             response.data.account = await this.dbconn.model.find({ email: query.email }, projection).exec()
             response.data.account = response.data.account[0]
-            response.data.auth = response.data.account.generateAuthToken()
             return response
         } catch (ex) {
             this.log.error(ex.message)
@@ -131,29 +132,31 @@ class AccountClass extends baseClass.ObotixController {
      * @param {*} res 
      * @returns 
      */
+    // eslint-disable-next-line no-unused-vars
     async get (req, res) {
-        var response = { status: 200, message: 'OK' }
-
         try {
-            response = await this.usersCtrl.get(res, req)
+            this.log.debug(`Request AuthUser: ${req.authuser.username}`)
+            var response = { status: 200, message: 'OK' }
+            var query = { username: req.authuser.username }
         } catch (ex) {
             this.log.error(ex.message, ex)
             throw new Error(ex.message)
         }
 
-        return response
-    }
-
-
-
-    async post (req, res) {
-        var response = { status: 200, message: 'OK' }
+        const projection = { 
+            _id: 0, 
+            password: 0,
+            role: 0,
+            __v: 0
+        }
 
         try {
-            response = await this.usersCtrl.post(req, res)
+            response.data = await this.dbconn.model.find(query, projection).exec()
+            response.data = response.data[0]
         } catch (ex) {
-            this.log.error(ex.message, ex)
-            throw new Error(ex.message)
+            let msg = 'UserClass.get() threw an exception:'
+            this.log.error(msg, ex)
+            throw new Error(`Exception: See previos ERROR: ${msg}`) 
         }
 
         return response
@@ -167,13 +170,32 @@ class AccountClass extends baseClass.ObotixController {
      * @returns 
      */
     async put (req, res) {
-        var response = { status: 200, message: 'OK' }
-
         try {
-            response = this.usersCtrl.put(req, res)
+            this.log.debug(`Request AuthUser: ${req.authuser.username}`)
+            var response = { status: 200, message: 'OK' }
+            var body = super.put(req, res)
+            var filter = { username: req.authuser.username}
         } catch (ex) {
             this.log.error(ex.message, ex)
             throw new Error(ex.message)
+        }
+        
+        const options = { 
+            projection: {
+                _id: 0,
+                password: 0,
+                role: 0,
+                __v: 0
+            },
+            upsert: true,
+            new: true
+        }
+
+        try {
+            response.data = await this.dbconn.model.findOneAndUpdate(filter, body, options)
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error (ex.message)
         }
 
         return response 
@@ -186,14 +208,22 @@ class AccountClass extends baseClass.ObotixController {
      * @param {*} res 
      * @returns 
      */
+    // eslint-disable-next-line no-unused-vars
     async delete (req, res) {
-        var response = { status: 200, message: 'OK' }
-
         try {
-            response = this.usersCtrl.delete(req, res)
+            this.log.debug(`Request AuthUser: ${req.authuser.username}`)
+            var response = { status: 200, message: 'OK' }
+            var filter = { username: req.authuser.username }
         } catch (ex) {
             this.log.error(ex.message, ex)
             throw new Error(ex.message)
+        }
+
+        try {
+            response.data = await this.dbconn.model.deleteMany(filter).exec()
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error (ex.message)
         }
 
         return response 

@@ -54,7 +54,7 @@ class ApiKeyClass extends baseClass.ObotixController {
             const expireyDate = new Date(apiKeyDoc.expirey)
             this.log.debug('ApiKey Expirery date:', expireyDate)
 
-            if (apiKeyDoc.user === apiuser && apiKeyDoc.enabled == true) {
+            if (apiKeyDoc.username === apiuser && apiKeyDoc.enabled == true) {
                 if (expireyDate.getTime() > rightnow.getTime()) {
                     if (this.checkHashKey(apikey, apiKeyDoc.apikey)) {
                         response.status = 200
@@ -110,7 +110,7 @@ class ApiKeyClass extends baseClass.ObotixController {
         }
 
         if (body.apikey === undefined ||
-            body.user === undefined ||
+            body.username === undefined ||
             body.expirey === undefined ||
             body.role === undefined ||
             body.enabled === undefined) {
@@ -121,7 +121,7 @@ class ApiKeyClass extends baseClass.ObotixController {
 
         // Check if the document already exits
         try {
-            let existingDoc = await this.dbconn.model.find({ user: body.user }).exec()
+            let existingDoc = await this.dbconn.model.find({ user: body.username }).exec()
             if (existingDoc.data !== undefined && Object.keys(existingDoc.data).length > 0) {
                 response.status = 400
                 response.message = 'Document already exists.'
@@ -191,7 +191,7 @@ class ApiKeyClass extends baseClass.ObotixController {
         }
 
         try {
-            this.log.warn(`DELETE: ApiKey by ${req.get('x-api-user')}`, query)
+            this.log.warn(`DELETE: ApiKey by ${req.authuser.username}`, query)
             response.data = await this.dbconn.model.deleteMany(query).exec()
             return response
         } catch (ex) {
