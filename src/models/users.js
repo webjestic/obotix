@@ -36,8 +36,9 @@ export default function () {
                     maxlength: 255,
                     unique: true,
                     // eslint-disable-next-line no-useless-escape
-                    match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/
-
+                    // match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/
+                    // eslint-disable-next-line max-len, no-useless-escape
+                    match: /^[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+([.-][a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+)*@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})+$/
                 },
                 password: {
                     // password stored as a bcrypt hash value
