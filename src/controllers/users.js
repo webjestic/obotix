@@ -105,28 +105,37 @@ class UsersClass extends baseClass.ObotixController {
 
         // Encrypt password for storage
         // Password Requirements
-        // - Minimum 8 characters
-        // - Maximum 32 characters
-        // - At least 1 number
-        // - At least 1 lower case letter
-        // - At least 1 upper case letter
-        // - At least 1 special character of !@#$%^&*
-        const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
-        if (regex.test(body.password))
-            body.password = this.createHashKey(body.password)
-        else
-            this.log.info('failed')
+        try {
+            const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
+            if (regex.test(body.password))
+                body.password = this.createHashKey(body.password)
+            else {
+                response.status = 400
+                response.message = `Password does not meet the strength requirements.
+            - Minimum 8 characters
+            - Maximum 32 characters
+            - At least 1 number
+            - At least 1 lower case letter
+            - At least 1 upper case letter
+            - At least 1 special character of !@#$%^&*`
+                return response
+            }
+        } catch (ex) {
+            this.log.error(ex.message, ex)
+            throw new Error(ex.message)
+        }
 
         // Store the data
         try {
             response.data = await this.dbconn.model.create(body)
             response.data = response.data._doc
             delete response.data.password
-            return response
         } catch (ex) {
             this.log.error(ex.message, ex)
             throw new Error(ex.message)
         }
+
+        return response
     }
 
 
