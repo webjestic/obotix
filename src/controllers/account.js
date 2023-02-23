@@ -29,7 +29,7 @@ class AccountClass extends baseClass.ObotixController {
         var response = { status: 401, data: {} }
         const token = req.get('x-auth-token')
 
-        if (!token) return response
+        if (token === undefined || token === null || token == 'null') return response
       
         try {
             const decoded = jwt.verify(token, process.env.OAPI_CRYPTO_KEY, {algorithm: 'HS512'})
@@ -187,6 +187,7 @@ class AccountClass extends baseClass.ObotixController {
 
         try {
             this.log.info(`${req.authuser.username} logout.`)
+            req.authuser = undefined
         } catch (ex) {
             this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
@@ -291,7 +292,7 @@ class AccountClass extends baseClass.ObotixController {
         }
 
         try {
-            response.data = await this.dbconn.model.deleteMany(filter).exec()
+            response.data = await this.dbconn.model.deleteOne(filter).exec()
         } catch (ex) {
             this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
