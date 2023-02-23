@@ -29,7 +29,7 @@ class AccountClass extends baseClass.ObotixController {
         var response = { status: 401, data: {} }
         const token = req.get('x-auth-token')
 
-        if (!token) return response
+        if (token === undefined || token === null || token == 'null') return response
       
         try {
             const decoded = jwt.verify(token, process.env.OAPI_CRYPTO_KEY, {algorithm: 'HS512'})
@@ -46,9 +46,10 @@ class AccountClass extends baseClass.ObotixController {
     }
 
 
+    // eslint-disable-next-line no-unused-vars
     async register(req, res) {
         var response = { status: 200, message: 'OK' }
-        var body = this.bodyFromRequest(req, res)
+        var body = this.bodyFromRequest(req.body)
 
         try {
             if (body.password !== body.passwordRepeat) {
@@ -81,7 +82,7 @@ class AccountClass extends baseClass.ObotixController {
         try {
             const regex = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,32}$')
             if (regex.test(body.password))
-                body.password = this.createHashKey(body.password)
+                body.password = this.usersCtrl.createHashKey(body.password)
             else {
                 response.status = 400
                 response.message = `Password does not meet the strength requirements.
@@ -186,6 +187,7 @@ class AccountClass extends baseClass.ObotixController {
 
         try {
             this.log.info(`${req.authuser.username} logout.`)
+            req.authuser = undefined
         } catch (ex) {
             this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
@@ -214,7 +216,6 @@ class AccountClass extends baseClass.ObotixController {
         }
 
         const projection = { 
-            _id: 0, 
             password: 0,
             role: 0,
             __v: 0
@@ -261,6 +262,8 @@ class AccountClass extends baseClass.ObotixController {
         }
 
         try {
+            if (body.role !== undefined) delete body.role
+            if (body._id !== undefined) delete body._id
             response.data = await this.dbconn.model.findOneAndUpdate(filter, body, options)
         } catch (ex) {
             this.log.error(ex.message, { stack: ex.stack })
@@ -289,7 +292,7 @@ class AccountClass extends baseClass.ObotixController {
         }
 
         try {
-            response.data = await this.dbconn.model.deleteMany(filter).exec()
+            response.data = await this.dbconn.model.deleteOne(filter).exec()
         } catch (ex) {
             this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
