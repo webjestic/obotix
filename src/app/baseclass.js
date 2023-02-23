@@ -36,7 +36,7 @@ class ObotixEmitter extends EventEmitter{
 }
 
 
-class ObotixController extends ObotixClass {
+class ObotixController extends ObotixEmitter {
 
     joi = Joi
     validator = validator

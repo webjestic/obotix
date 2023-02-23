@@ -109,6 +109,8 @@ class AccountClass extends baseClass.ObotixController {
             throw new Error(ex.message)
         }
 
+        this.emit('onAccountCreate', response.data)
+
         return response
     }
 
@@ -177,6 +179,7 @@ class AccountClass extends baseClass.ObotixController {
             throw new Error(ex.message)
         }
 
+        this.emit('onAccountLogin', response.data)
         return response
     }
 
@@ -187,12 +190,12 @@ class AccountClass extends baseClass.ObotixController {
 
         try {
             this.log.info(`${req.authuser.username} logout.`)
-            req.authuser = undefined
         } catch (ex) {
             this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
+        this.emit('onAccountLogout', req.authuser)
         return response
     }
 
@@ -283,6 +286,7 @@ class AccountClass extends baseClass.ObotixController {
     // eslint-disable-next-line no-unused-vars
     async delete (req, res) {
         try {
+            var username = req.authuser.username
             this.log.debug(`Request AuthUser: ${req.authuser.username}`)
             var response = { status: 200, message: 'OK' }
             var filter = { username: req.authuser.username }
@@ -298,6 +302,7 @@ class AccountClass extends baseClass.ObotixController {
             throw new Error (ex.message)
         }
 
+        this.emit('onAccountDelete', username)
         return response 
     }
 }
