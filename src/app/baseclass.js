@@ -30,8 +30,14 @@ class ObotixClass {
 
 
 class ObotixEmitter extends EventEmitter{
+    _dirname = __dirname
+    _filename = __filename
+    __modulename = __modulename
+    log = undefined
+
     constructor (namespace) {
-        super(namespace)
+        super()
+        this.log = logger.getLogger(namespace)
     }
 }
 
