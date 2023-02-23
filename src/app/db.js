@@ -34,7 +34,8 @@ class DB {
 
         } catch(ex) {
             const cs = connectionString
-            this.log.error(`Unable to connect to ${cs.substring(cs.lastIndexOf('/') + 1)}. Try VPN?`, ex)
+            this.log.error(`Unable to connect to ${cs.substring(cs.lastIndexOf('/') + 1)}. Try VPN?`)
+            this.log.error(ex.message, { stack: ex.stack })
             this.log.fatal('Terminating process due to critical errors.')
             process.exit()
         }
@@ -50,7 +51,7 @@ class DB {
     }
 
     onError(err, conn) { 
-        this.log.error('Mongoose Event ERRPR:', conn.config.db, err) 
+        this.log.error('Mongoose Event:', conn.config.db, err) 
     }
 
 

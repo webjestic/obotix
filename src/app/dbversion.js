@@ -66,7 +66,7 @@ class DBVersionUpdater {
                     })
                     this.log.info('Updated dbversions.doc, signaling the observing servers.')
                 } catch(ex) {
-                    this.log.error(ex)
+                    this.log.error(ex.message, { stack: ex.stack })
                 }
             }
             await this.endUpdate()
@@ -143,6 +143,7 @@ class DBVersionUpdater {
                 this.updateInProgress = true
             } else {
                 this.log.error('Failed to update "debversions" :', ex)
+                this.log.error(ex.message, { stack: ex.stack })
                 this.log.fatal('Error too serious to continue. Contact Admin or Developer immediately. ')
                 process.exit()
             }
@@ -190,7 +191,7 @@ class DBVersionUpdater {
             if (doc[0].state === 'Complete')
                 this.updateInProgress = false
         } catch(ex) {
-            this.log.error('checkProgress', ex)
+            this.log.error(ex.message, { stack: ex.stack })
         }
     }
 
@@ -225,23 +226,25 @@ class DBNodeUpdater extends DBVersionUpdater {
         let configDoc = await this.configs.model.find({}).exec()
         configDoc = configDoc[0]
 
-        var results = undefined
+        // var results = undefined
         if (configDoc !== undefined) {
             this.log.debug(`configs.id : ${configDoc.id}`)
-            this.log.debug(this.versionData.configs)
+            // this.log.debug(this.versionData.configs)
             try {
-                results = await this.configs.model.findByIdAndUpdate( configDoc.id, this.versionData.configs)
-                this.log.debug(results)
+                await this.configs.model.findByIdAndUpdate( configDoc.id, this.versionData.configs)
+                // results = await this.configs.model.findByIdAndUpdate( configDoc.id, this.versionData.configs)
+                // this.log.debug(results)
             } catch(ex) {
-                this.log.error('updateConfigs() ', ex)
+                this.log.error(ex.message, { stack: ex.stack })
             }
         } else {
             this.log.info(`Creating new ${this.dbName}.configs`)
             try {
-                results = await this.configs.model.create(this.versionData.configs)
-                this.log.debug(results)
+                await this.configs.model.create(this.versionData.configs)
+                // results = await this.configs.model.create(this.versionData.configs)
+                // this.log.debug(results)
             } catch (ex) {
-                this.log.error('updateConfigs() ', ex)
+                this.log.error(ex.message, { stack: ex.stack })
             }
         }
     }
@@ -252,10 +255,11 @@ class DBNodeUpdater extends DBVersionUpdater {
         this.log.info(`Updating ${this.configs.connection.config.db}.apikeys`)
 
         try {
-            var results = await this.apikeys.model.insertMany (this.versionData.apikeys)
-            this.log.debug(results)
+            await this.apikeys.model.insertMany (this.versionData.apikeys)
+            // var results = await this.apikeys.model.insertMany (this.versionData.apikeys)
+            // this.log.debug(results)
         } catch (ex) {
-            this.log.error('updateApiKeys() ', ex)
+            this.log.error(ex.message, { stack: ex.stack })
         }
     }
 }

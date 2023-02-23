@@ -63,7 +63,7 @@ class DBLog {
         try {
             logger.addEventFunction(logToDb)
         } catch(ex) {
-            this.log.error(ex)
+            this.log.error(ex.message, { stack: ex.stack })
         }
 
         let msg = `LogToDb listener attached to Logish: Enabled=${config.getConfig().logger.logToDb.enabled} `

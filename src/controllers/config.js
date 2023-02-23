@@ -23,9 +23,8 @@ class ConfigController extends baseClass.ObotixController {
             response.data = response.data[0]
             return response
         } catch (ex) {
-            let msg = 'UserClass.get() threw an exception:'
-            this.log.error(msg, ex)
-            throw new Error(`Exception: See previos ERROR: ${msg}`) 
+            this.log.error(ex.message, { stack: ex.stack })
+            throw new Error(`Exception: See previos ERROR: ${ex.message}`) 
         }
     }
 
@@ -48,7 +47,7 @@ class ConfigController extends baseClass.ObotixController {
             response.data = await this.dbconn.model.findByIdAndUpdate(this.dbconn.data._id, body, options)
             return response
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
         }
     }

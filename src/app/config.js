@@ -26,7 +26,7 @@ class Config extends EventEmitter {
             this.setupDbListeners()
             await this.loadConfig()
         } catch(ex) {
-            this.log.error(ex)
+            this.log.error(ex.message, { stack: ex.stack })
         }
     }
 
@@ -37,11 +37,11 @@ class Config extends EventEmitter {
             try {
                 this.configChange() 
             } catch (ex) {
-                this.log.error(ex)
+                this.log.error(ex.message, { stack: ex.stack })
             }
         })
         this.dbconn.onChange.on('error', (err) => {
-            this.log.error(err)
+            this.log.error(err, { stack: err.stack } )
         })
     }
 
@@ -77,7 +77,7 @@ class Config extends EventEmitter {
             // this.log.debug('config.getConfig() returns', this.dbconn.data)
             logger.setLevel(this.dbconn.data.logger.level) // updating Logger, because it is not a subscriber
         } catch (ex) {
-            this.log.error(ex)
+            this.log.error(ex.message, { stack: ex.stack })
         }
     }
 
@@ -90,7 +90,7 @@ class Config extends EventEmitter {
     //             // saved!
     //         })
     //     } catch(ex) {
-    //         this.log.error(ex)
+    //         this.log.error(ex.message, { stack: ex.stack })
     //     }
     // }
 

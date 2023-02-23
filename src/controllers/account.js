@@ -38,7 +38,7 @@ class AccountClass extends baseClass.ObotixController {
             response.status = 200
             response.data = decoded
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             response.data = ex
         }
 
@@ -58,7 +58,7 @@ class AccountClass extends baseClass.ObotixController {
             delete body.passwordRepeat
             if (body.role !== undefined) delete body.role
         } catch (ex) {
-            this.log.error(ex.message)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -72,7 +72,7 @@ class AccountClass extends baseClass.ObotixController {
                 return response
             }
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -94,7 +94,7 @@ class AccountClass extends baseClass.ObotixController {
                 return response
             }
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -104,7 +104,7 @@ class AccountClass extends baseClass.ObotixController {
             response.data = response.data._doc
             delete response.data.password
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -125,7 +125,7 @@ class AccountClass extends baseClass.ObotixController {
         try {
             response.data = await this.dbconn.model.find({ email: query.email }, projection).exec()
         } catch (ex) {
-            this.log.error(ex.message)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -138,7 +138,7 @@ class AccountClass extends baseClass.ObotixController {
                 return response
             }
         } catch (ex) {
-            this.log.error(ex.message)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -154,7 +154,7 @@ class AccountClass extends baseClass.ObotixController {
                 }
             }
         } catch (ex) {
-            this.log.error(ex.message)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -170,7 +170,7 @@ class AccountClass extends baseClass.ObotixController {
             response.data.account = response.data.account[0]
             this.log.info(`${response.data.account.username} login.`)
         } catch (ex) {
-            this.log.error(ex.message)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -185,7 +185,7 @@ class AccountClass extends baseClass.ObotixController {
         try {
             this.log.info(`${req.authuser.username} logout.`)
         } catch (ex) {
-            this.log.error(ex.message)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -207,7 +207,7 @@ class AccountClass extends baseClass.ObotixController {
             var response = { status: 200, message: 'OK' }
             var query = { username: req.authuser.username }
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -222,9 +222,8 @@ class AccountClass extends baseClass.ObotixController {
             response.data = await this.dbconn.model.find(query, projection).exec()
             response.data = response.data[0]
         } catch (ex) {
-            let msg = 'UserClass.get() threw an exception:'
-            this.log.error(msg, ex)
-            throw new Error(`Exception: See previos ERROR: ${msg}`) 
+            this.log.error(ex.message, { stack: ex.stack })
+            throw new Error(`Exception: See previos ERROR: ${ex.message}`) 
         }
 
         return response
@@ -244,7 +243,7 @@ class AccountClass extends baseClass.ObotixController {
             var body = super.put(req, res)
             var filter = { username: req.authuser.username}
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
         
@@ -262,7 +261,7 @@ class AccountClass extends baseClass.ObotixController {
         try {
             response.data = await this.dbconn.model.findOneAndUpdate(filter, body, options)
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
         }
 
@@ -283,14 +282,14 @@ class AccountClass extends baseClass.ObotixController {
             var response = { status: 200, message: 'OK' }
             var filter = { username: req.authuser.username }
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
         try {
             response.data = await this.dbconn.model.deleteMany(filter).exec()
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
         }
 
