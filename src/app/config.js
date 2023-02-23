@@ -60,7 +60,7 @@ class Config extends EventEmitter {
 
     configChange() {
         this.loadConfig()
-        this.emit('configChange')
+        this.emit('onConfigChange', this.dbconn.data)
         this.log.info(`Configuration update recieved from ${this.dbconn.connection.config.db}.configs. Notifying listeners.`)
     }
 
