@@ -36,7 +36,7 @@ class AccessLogsClass extends baseClass.ObotixController {
             var count = await this.dbconn.model.count()
             var paginate = this.paginate(req)
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -48,7 +48,7 @@ class AccessLogsClass extends baseClass.ObotixController {
         try { 
             var doc = await this.dbconn.model.find(query).limit(paginate.limit).skip(paginate.page).exec()
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -66,7 +66,7 @@ class AccessLogsClass extends baseClass.ObotixController {
                         result.entries.push(logentry)
                         result.returned = Number(key) + 1
                     } catch(ex) {
-                        this.log.error(ex)
+                        this.log.error(ex.message, { stack: ex.stack })
                     }
                 }
             } else
@@ -99,7 +99,7 @@ class AccessLogsClass extends baseClass.ObotixController {
         try {
             response.data = await this.dbconn.model.deleteMany(query).exec()
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 

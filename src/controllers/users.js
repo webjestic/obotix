@@ -65,9 +65,8 @@ class UsersClass extends baseClass.ObotixController {
             response.data = await this.dbconn.model.find(query, projection).limit(paginate.limit).skip(paginate.page).exec()
             return response
         } catch (ex) {
-            let msg = 'UserClass.get() threw an exception:'
-            this.log.error(msg, ex)
-            throw new Error(`Exception: See previos ERROR: ${msg}`) 
+            this.log.error(ex.message, { stack: ex.stack })
+            throw new Error(`Exception: See previos ERROR: ${ex.message}`) 
         }
     }
 
@@ -99,7 +98,7 @@ class UsersClass extends baseClass.ObotixController {
                 return response
             }
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -121,7 +120,7 @@ class UsersClass extends baseClass.ObotixController {
                 return response
             }
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -131,7 +130,7 @@ class UsersClass extends baseClass.ObotixController {
             response.data = response.data._doc
             delete response.data.password
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error(ex.message)
         }
 
@@ -170,7 +169,7 @@ class UsersClass extends baseClass.ObotixController {
             response.data = await this.dbconn.model.findOneAndUpdate(filter, body, options)
             return response
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
         }
     }
@@ -197,7 +196,7 @@ class UsersClass extends baseClass.ObotixController {
             response.data = await this.dbconn.model.deleteMany(query).exec()
             return response
         } catch (ex) {
-            this.log.error(ex.message, ex)
+            this.log.error(ex.message, { stack: ex.stack })
             throw new Error (ex.message)
         }
     }
