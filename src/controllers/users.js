@@ -55,9 +55,7 @@ class UsersClass extends baseClass.ObotixController {
         const query = super.get(req, res)
         const paginate = this.paginate(req)
         const projection = { 
-            _id: 0, 
             password: 0,
-            role: 0,
             __v: 0
         }
 
