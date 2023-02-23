@@ -131,10 +131,12 @@ class AccountClass extends baseClass.ObotixController {
 
         // if no document was found for the user
         try {
-            if (response.data[0]._id === undefined) {
+            // if (response.data[0]._id === undefined) {
+            if (response.data.length <= 0) {
                 this.log.debug(`Login Fail: No document for ${query.email}`)
                 response.status = 401
                 response.message = 'Invalid login attempt; credentials.'
+                delete response.data
                 return response
             }
         } catch (ex) {
