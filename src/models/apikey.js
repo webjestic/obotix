@@ -8,7 +8,7 @@ import db from '../app/db.js'
 import logger from '../app/logger.js'
 
 var dbconn = undefined
-const log = logger.getLogger('model:apikey')
+const log = logger.getLogger('obx-model:apikey')
 
 export default function () {
     if (dbconn === undefined) {

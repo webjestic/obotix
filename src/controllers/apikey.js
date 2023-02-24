@@ -23,7 +23,7 @@ class ApiKeyClass extends baseClass.ObotixController {
     // rounds=31: 2-3 days/hash
 
     constructor() {
-        super('ctrl:apikey')
+        super('obx-ctrl:apikey')
         this.dbconn = dbcollection()
     }
 

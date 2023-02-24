@@ -5,7 +5,7 @@
 import db from '../app/db.js'
 import logger from '../app/logger.js'
 
-const log = logger.getLogger('mw:dbhealth')
+const log = logger.getLogger('obx-mw:dbhealth')
 
 /**
  * Function is responsible for checkting the readyState of the database connections.

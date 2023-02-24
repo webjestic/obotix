@@ -7,7 +7,7 @@ import ApiKeyCtrl from '../controllers/apikey.js'
 import AccountCtrl from '../controllers/account.js'
 
 import logger from '../app/logger.js'
-const log = logger.getLogger('mw:auth')
+const log = logger.getLogger('obx-mw:auth')
 
 export default async function (req, res, next) {
 

@@ -9,7 +9,7 @@ import baseClass from '../app/baseclass.js'
 class DbLogClass extends baseClass.ObotixController {
 
     constructor() {
-        super('ctrl:dblog')
+        super('obx-ctrl:dblog')
         this.dbconn = dbcollection()
     }
 

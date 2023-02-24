@@ -31,12 +31,12 @@ import accountRoute from '../routes/account.js'
 
 class Http {
 
-    log = logger.getLogger('app:http')
+    log = logger.getLogger('obx:http')
     app = express()
 
 
     async init() {
-        this.log.debug('Initializing http serivce.')
+        this.log.info('Initializing http serivce.')
 
         this.app.disable('x-powered-by')
         this.app.use(express.json())

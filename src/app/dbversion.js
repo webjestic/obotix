@@ -40,7 +40,7 @@ class DBVersionUpdater {
     async update(envVarName) {
 
         // Class variable initialization
-        this.log = logger.getLogger('app:dbversion')
+        this.log = logger.getLogger('obx:dbversion')
         this.appVersion = (JSON.parse(fs.readFileSync('package.json', 'utf8'))).version
         this.dbName = db.getDbNameFromConnStr(process.env[envVarName.toUpperCase()])
         this.envVarName = envVarName

@@ -6,7 +6,7 @@ import logger from '../app/logger.js'
 import stats from '../controllers/stats.js'
 
 
-const log = logger.getLogger('mw:500')
+const log = logger.getLogger('obx-mw:500')
 
 /**
  * Default excetion/error handler for our express app.
