@@ -3,7 +3,7 @@
  */
 
 import logger from '../app/logger.js'
-const log = logger.getLogger('mw:role')
+const log = logger.getLogger('obx-mw:role')
 
 export default function(role)  {
     return (req, res, next) => {

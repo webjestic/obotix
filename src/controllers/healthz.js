@@ -6,7 +6,7 @@ import logger from '../app/logger.js'
 import db from '../app/db.js'
 import fs from 'fs'
 
-const log = logger.getLogger('ctrl:healthz')
+const log = logger.getLogger('obx:healthz')
 
 var ver = 0
 try {

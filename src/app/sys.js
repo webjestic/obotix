@@ -8,11 +8,11 @@ import fnlib from 'fnlib'
 
 class Sys {
 
-    log = logger.getLogger('app:sys')
+    log = logger.getLogger('obx:sys')
     resources = {}
 
-    init() {
-        this.log.debug('Initializing system objects.')
+    async init() {
+        this.log.info('Initializing system objects.')
     }
 
     getResources() {

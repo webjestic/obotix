@@ -13,8 +13,8 @@ class Logger {
     log = undefined
 
     init() {
-        this.log = this.getLogger('app:logger')
-        this.log.debug('Initializing logging system.')
+        this.log = this.getLogger('obx:logger')
+        this.log.info('Initializing logging system.')
     }
 
 

@@ -260,3 +260,10 @@ router.get('/', rateLimit, apikey, role(roles.manager), async (req, res) => {
 500 Inter Server Error - Server side errors and issues
 503 Service Unavailable - In maintenance mode or overloaded
 ```
+
+## Firebase
+[Custom Auth](https://firebase.google.com/docs/auth/web/custom-auth?hl=en&authuser=0)
+
+[Admin SDK](https://firebase.google.com/docs/admin/setup#node.js_6)
+
+[Website Auth](https://firebase.google.com/docs/auth/web/start?authuser=0)

@@ -7,12 +7,12 @@ import logger from './logger.js'
 
 class DB {
 
-    log = logger.getLogger('app:db')
+    log = logger.getLogger('obx:db')
     connections = []
     mongoose = mongoose
 
     async init() {
-        this.log.debug('Initializing database objects.')
+        this.log.info('Initializing database objects.')
         await this.createConnection(process.env.OAPI_DB_NODE)
         await this.createConnection(process.env.OAPI_DB_APP)
     }

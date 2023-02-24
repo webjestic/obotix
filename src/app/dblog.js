@@ -55,10 +55,10 @@ function levelAllowed( logLevel) {
 
 class DBLog {
 
-    log = logger.getLogger('app:dblog')
+    log = logger.getLogger('obx:dblog')
     async init() {
 
-        this.log.debug('Initializing database logging.')
+        this.log.info('Initializing database logging.')
 
         try {
             logger.addEventFunction(logToDb)

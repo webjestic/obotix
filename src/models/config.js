@@ -5,7 +5,7 @@
 import db from '../app/db.js'
 import logger from '../app/logger.js'
 
-const log = logger.getLogger('model:config')
+const log = logger.getLogger('obx-model:config')
 var dbconn = undefined
 
 export default function () {

@@ -13,12 +13,12 @@ class Config extends EventEmitter {
     dbconn = undefined
     defaultConfig = (JSON.parse(fs.readFileSync('config/default.json', 'utf8'))).configs
 
-    log = logger.getLogger('app:config')
+    log = logger.getLogger('obx:config')
 
 
 
     async init() {
-        this.log.debug('Initializing remote configuration.')
+        this.log.info('Initializing remote configuration.')
         try {
             this.dbconn = dbconn()
 
@@ -33,22 +33,27 @@ class Config extends EventEmitter {
 
     setConfigWatch() {
         this.dbconn.onChange = this.dbconn.model.watch()
-        this.dbconn.onChange.on('change', () => {
-            try {
-                this.configChange() 
-            } catch (ex) {
-                this.log.error(ex.message, { stack: ex.stack })
-            }
-        })
-        this.dbconn.onChange.on('error', (err) => {
-            this.log.error(err, { stack: err.stack } )
-        })
+        this.dbconn.onChange.on('change', this.setOnChangeChange)
+        this.dbconn.onChange.on('error', this.setOnChangeError)
     }
 
+    setOnChangeChange() {
+        try {
+            this.configChange() 
+        } catch (ex) {
+            this.log.error(ex.message, { stack: ex.stack })
+        }
+    }
+
+    setOnChangeError(err) {
+        this.log.error(err, { stack: err.stack } )
+    }
 
     setupDbListeners() {
         this.dbconn.connection.on('disconnected', () => {
             this.log.warn(`Disconnect detected. Closing Config.watch() on ${this.dbconn.connection.config.db}`)
+            this.dbconn.onChange.removeListener('change', this.setOnChangeChange)
+            this.dbconn.onChange.removeListener('error', this.setOnChangeError)
             this.dbconn.onChange.close()
         })
         this.dbconn.connection.on('reconnected', () => {

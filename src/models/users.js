@@ -7,7 +7,7 @@ import db from '../app/db.js'
 import logger from '../app/logger.js'
 import jwt from 'jsonwebtoken'
 
-const log = logger.getLogger('model:users')
+const log = logger.getLogger('obx-model:users')
 var dbconn = undefined
 
 export default function () {

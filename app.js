@@ -7,7 +7,7 @@ import fs from 'fs'
 
 await obotix.init()
 
-const log = obotix.getLogger('src:index')
+const log = obotix.getLogger('obx:app')
 
 
 // Add middleware & Routes here

@@ -9,6 +9,7 @@ import DbLog from './app/dblog.js'
 import Http from './app/http.js'
 import Sys from './app/sys.js'
 import DBVersion from './app/dbversion.js'
+import Firebase from './app/firebase.js'
 
 import rateLimit from './middleware/rateLimit.js'
 import auth from './middleware/auth.js'
@@ -20,7 +21,6 @@ import configModel from './models/config.js'
 import dbversionModel from './models/dbversion.js'
 
 import AccountController from './controllers/account.js'
-
 import BaseClass from './app/baseclass.js'
 
 
@@ -31,10 +31,11 @@ class Obotix  {
     dblog = DbLog
     http = Http
     sys = Sys
-    baseClass = BaseClass
+    firebase = Firebase
 
-    dbversion = undefined
+    baseClass = BaseClass
     log = undefined
+    dbversion = undefined
 
     constructor () {
         dotenv.config()
@@ -43,7 +44,7 @@ class Obotix  {
 
     async init() {
         this.logger.init()
-        this.log = this.logger.getLogger('app:index')
+        this.log = this.logger.getLogger('obx:index')
         this.log.info(`Initializing app in a ${process.env.NODE_ENV.toUpperCase()} environment.`)
 
         await this.db.init()
@@ -51,7 +52,8 @@ class Obotix  {
         await this.dbversion.update('OAPI_DB_NODE')
         await this.config.init()
         await this.dblog.init()
-        this.sys.init()
+        await this.sys.init()
+        await this.firebase.init()
         await this.http.init()
     }
     

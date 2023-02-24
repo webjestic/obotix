@@ -27,7 +27,7 @@ class UsersClass extends baseClass.ObotixController {
      * Initialize base class constructor, creating the unique this.log for this instance.
      */
     constructor() {
-        super('ctrl:users')
+        super('obx-ctrl:users')
         this.dbconn = dbcollection()
     }
 

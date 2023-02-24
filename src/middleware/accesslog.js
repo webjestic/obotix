@@ -8,7 +8,7 @@ import os from 'os'
 
 import dbconn from '../models/accesslog.js'
 
-const log = logger.getLogger('mw:accesslog')
+const log = logger.getLogger('obx-mw:accesslog')
 
 
 /**

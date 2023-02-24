@@ -5,7 +5,7 @@
 import db from '../app/db.js'
 import logger from '../app/logger.js'
 
-const log = logger.getLogger('model:dbversion')
+const log = logger.getLogger('obx-model:dbversion')
 var dbconn = undefined
 
 export default function () {
@@ -19,7 +19,7 @@ export default function () {
         // Example Document
         // {
         //     "_id": {"$oid":"63ea8071104e5441f7137685"},
-        //     "db": "dev-obotix-node",
+        //     "db": "dev-obx-node",
         //     "version": "01.41.111",
         //     "state": "inProgress",
         //     "updatedBy": "A074709.local",
