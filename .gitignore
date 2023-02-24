@@ -7,7 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 zdoc/
 __temp.*
-firebase-adminsdk*.json
+firebase-adminsdk-*.json
 
 # Mac OS
 .DS_Store

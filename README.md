@@ -267,3 +267,8 @@ router.get('/', rateLimit, apikey, role(roles.manager), async (req, res) => {
 [Admin SDK](https://firebase.google.com/docs/admin/setup#node.js_6)
 
 [Website Auth](https://firebase.google.com/docs/auth/web/start?authuser=0)
+
+### firebase-adminskd.gpg
+
+- decrypt | gpg --pinentry-mode=loopback --passphrase ADMIN-TOKEN_passphrase -d --no-use-agent -o .env .env.gpg
+- encrypt | gpg --pinentry-mode=loopback --passphrase ADMIN-TOKEN_passphrase -c .env
