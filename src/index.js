@@ -47,14 +47,20 @@ class Obotix  {
         this.log = this.logger.getLogger('obx:index')
         this.log.info(`Initializing app in a ${process.env.NODE_ENV.toUpperCase()} environment.`)
 
-        await this.db.init()
-        this.dbversion = new DBVersion.DBNodeUpdater()
-        await this.dbversion.update('OAPI_DB_NODE')
-        await this.config.init()
-        await this.dblog.init()
-        await this.sys.init()
-        await this.firebase.init()
-        await this.http.init()
+        try {
+            await this.db.init()
+            this.dbversion = new DBVersion.DBNodeUpdater()
+            await this.dbversion.update('OAPI_DB_NODE')
+            await this.config.init()
+            await this.dblog.init()
+            await this.sys.init()
+            await this.firebase.init()
+            await this.http.init()
+        } catch (ex) {
+            this.log.error('Critical error occured, exiting gracefully.')
+            this.log.fatal(ex.message, {stack: ex.stack})
+            process.exit()
+        }
     }
     
     getApp() { return this.http.getApp() }
