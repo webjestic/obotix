@@ -1,6 +1,6 @@
 {
   "name": "obotix",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "main": "src/index.js",
   "type": "module",
@@ -19,7 +19,7 @@
     "coverage": "vitest run --coverage",
     "lint": "eslint . --cache "
   },
-  "author": "",
+  "author": "webjestic (Michael N)",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.0",
