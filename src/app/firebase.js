@@ -25,7 +25,7 @@ class Firebase {
             })
             this.log.info('Firebase SDK successfully initialized.')
         } else 
-            throw new Error('No GOOGLE_APPLICATION_CREDENTIALS found.')
+            throw new Error('No GOOGLE_FIREBASE_ADMINSDK found.')
     }
 }
 

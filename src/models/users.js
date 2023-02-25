@@ -83,6 +83,22 @@ export default function () {
                     type: Number,
                     default: 0,
                     enum: [0, 1, 2, 4, 8]
+                },
+                emailVerified: {
+                    type: Boolean,
+                    default: false
+                },
+                displayName: {
+                    type: String,
+                    required: false
+                },
+                photoUrl: {
+                    type: String,
+                    required: false
+                },
+                disabled: {
+                    type: Boolean,
+                    default: false
                 }
             }, 
             { 
