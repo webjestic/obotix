@@ -94,11 +94,17 @@ export default function () {
                 },
                 photoUrl: {
                     type: String,
-                    required: false
+                    required: false,
+                    default: null
                 },
                 disabled: {
                     type: Boolean,
                     default: false
+                },
+                createdOn: {
+                    type: Date,
+                    required: true,
+                    default: new Date()
                 }
             }, 
             { 
