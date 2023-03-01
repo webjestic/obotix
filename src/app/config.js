@@ -18,7 +18,7 @@ class Config extends EventEmitter {
 
 
     async init() {
-        this.log.debug('Initializing remote configuration.')
+        this.log.info('Initializing remote configuration.')
         try {
             this.dbconn = dbconn()
 
