@@ -124,7 +124,7 @@ export default function () {
             dbconn.model = dbconn.connection.model('User', dbconn.schema)
         } catch(ex) {
             dbconn = undefined
-            log.error(ex)
+            log.error(ex.message, { stack: ex.stack })
         }
     }
         
