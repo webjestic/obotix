@@ -105,28 +105,28 @@ class ObotixController extends ObotixEmitter {
 
     // eslint-disable-next-line no-unused-vars
     get(req, res) {
-        this.log.debug(`get() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
+        this.log.trace(`get() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
         return this.queryFromRequest(req.query)
     }
 
 
     // eslint-disable-next-line no-unused-vars
     post(req, res) {
-        this.log.debug(`get() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
+        this.log.trace(`post() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
         return this.bodyFromRequest(req.body)
     }
 
 
     // eslint-disable-next-line no-unused-vars
     put(req, res) {
-        this.log.debug(`get() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
+        this.log.trace(`put() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
         return this.bodyFromRequest(req.body)
     }
 
 
     // eslint-disable-next-line no-unused-vars
     delete(req, res) {
-        this.log.debug(`get() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
+        this.log.trace(`delete() ${this.dbconn.connection.config.db} ${this.dbconn.model.modelName}`)
         return this.queryFromRequest(req.query)
     }
 }

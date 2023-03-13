@@ -76,12 +76,12 @@ export default function (router) {
 ## Create Controller - Example
 ```javascript
 import obotix from 'obotix'
-import customModel from '../models/custom.js'
+import dbCollecttion from '../models/custom.js'
 
 class CustomController extends baseClass.ObotixController {
     constructor() {
         super('ctrl:custom')
-        this.dbconn = customModel()
+        this.dbconn = dbCollecttion()
     }
 
     async get(req, res) {
