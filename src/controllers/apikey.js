@@ -52,7 +52,7 @@ class ApiKeyClass extends baseClass.ObotixController {
             apiKeyDoc = apiKeyDoc[0]
             const rightnow = new Date()
             const expireyDate = new Date(apiKeyDoc.expirey)
-            this.log.debug('ApiKey Expirery date:', expireyDate)
+            this.log.trace('ApiKey Expirery date:', expireyDate)
 
             if (apiKeyDoc.username === apiuser && apiKeyDoc.enabled == true) {
                 if (expireyDate.getTime() > rightnow.getTime()) {
