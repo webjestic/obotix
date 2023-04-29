@@ -9,7 +9,6 @@ import DbLog from './app/dblog.js'
 import Http from './app/http.js'
 import Sys from './app/sys.js'
 import DBVersion from './app/dbversion.js'
-import Firebase from './app/firebase.js'
 
 import rateLimit from './middleware/rateLimit.js'
 import auth from './middleware/auth.js'
@@ -31,7 +30,6 @@ class Obotix  {
     dblog = DbLog
     http = Http
     sys = Sys
-    firebase = Firebase
 
     baseClass = BaseClass
     log = undefined
@@ -54,7 +52,6 @@ class Obotix  {
             await this.config.init()
             await this.dblog.init()
             await this.sys.init()
-            await this.firebase.init()
             await this.http.init()
         } catch (ex) {
             this.log.error('Critical error occured, exiting gracefully.')
