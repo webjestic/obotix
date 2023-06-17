@@ -26,10 +26,7 @@ function logToDb(logEntry) {
                     }
 
                     try {
-                        dblog.model.create(entry, (err) => {
-                            if (err) return console.error(err)
-                            // saved!
-                        })
+                        dblog.model.create(entry)
                     } catch(ex) {
                         // using console - does not trigger another log event
                         console.log(ex)
