@@ -48,7 +48,7 @@ class ApiKeyClass extends baseClass.ObotixController {
         if (!apikey || !apiuser) return response
 
         try {
-            let apiKeyDoc = await this.dbconn.model.find({ 'user' : apiuser }).exec()
+            let apiKeyDoc = await this.dbconn.model.find({ 'username' : apiuser }).exec()
             apiKeyDoc = apiKeyDoc[0]
             const rightnow = new Date()
             const expireyDate = new Date(apiKeyDoc.expirey)
