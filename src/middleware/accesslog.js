@@ -48,9 +48,7 @@ export default async function (req, res, next){
 
             try {
                 log.trace(entry)
-                accesslogs.model.create(acceessEntry, (err) => {
-                    if (err) return log.error(err)
-                })
+                await accesslogs.model.create(acceessEntry)
             } catch(ex) {
                 log.error(ex)
             }
