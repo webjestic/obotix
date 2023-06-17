@@ -1,6 +1,6 @@
 {
   "name": "obotix",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "src/index.js",
   "type": "module",
@@ -33,13 +33,13 @@
     "joi": "^17.8.3",
     "jsonwebtoken": "^9.0.0",
     "logish": "^1.0.14",
-    "mongoose": "^6.6.3",
+    "mongoose": "^7.3.0",
     "swagger-ui-express": "^4.6.0",
     "validator": "^13.9.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "eslint": "^8.24.0",
-    "vitest": "^0.23.4"
+    "vitest": "^0.32.2"
   }
 }

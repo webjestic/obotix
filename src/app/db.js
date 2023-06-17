@@ -20,7 +20,7 @@ class DB {
     async createConnection(connectionString) {
         try {
             var conn = await mongoose.createConnection(connectionString, 
-                {useNewUrlParser: true, keepAlive: true, keepAliveInitialDelay: 300000}).asPromise()
+                {useNewUrlParser: true}).asPromise()
     
             conn.on('disconnected', () => { this.onDisconnected(conn) }). 
                 on('reconnected', () => { this.onReconnected(conn) }).  
