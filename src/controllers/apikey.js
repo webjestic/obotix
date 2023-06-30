@@ -56,7 +56,7 @@ class ApiKeyClass extends baseClass.ObotixController {
 
             if (apiKeyDoc.username === apiuser && apiKeyDoc.enabled == true) {
                 if (expireyDate.getTime() > rightnow.getTime()) {
-                    if (this.checkHashKey(apikey, apiKeyDoc.apikey)) {
+                    if (this.checkHashKey(apikey, apiKeyDoc.apikey) === true) {
                         response.status = 200
                         response.data = apiKeyDoc
                     }
